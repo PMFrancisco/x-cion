@@ -19,13 +19,24 @@ const withPWA = withPWAInit({
         },
       },
       {
-        urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/.*/i,
+        urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/public\/post-media\/.*/i,
         handler: "CacheFirst",
         options: {
-          cacheName: "supabase-storage",
+          cacheName: "supabase-post-media",
           expiration: {
             maxEntries: 256,
             maxAgeSeconds: 60 * 60 * 24 * 30,
+          },
+        },
+      },
+      {
+        urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/public\/(avatars|banners)\/.*/i,
+        handler: "StaleWhileRevalidate",
+        options: {
+          cacheName: "supabase-profiles",
+          expiration: {
+            maxEntries: 128,
+            maxAgeSeconds: 60 * 60 * 24,
           },
         },
       },
