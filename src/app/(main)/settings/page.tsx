@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { profile, refreshProfile } = useAuth();
+  const { profile, refreshProfile, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
@@ -128,6 +128,13 @@ export default function SettingsPage() {
           <p className="text-sm text-muted-foreground">
             Rol: {profile?.role}
           </p>
+          <Button
+            variant="destructive"
+            className="mt-4"
+            onClick={signOut}
+          >
+            Cerrar sesión
+          </Button>
         </div>
       </div>
     </div>

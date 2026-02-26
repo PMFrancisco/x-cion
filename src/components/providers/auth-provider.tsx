@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
-import type { User } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
@@ -41,17 +41,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfile = useCallback(
     async (userId: string) => {
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", userId)
           .single();
 
+        if (error) {
+          setProfile(null);
+          return;
+        }
+
         if (data) {
           setProfile(data as Profile);
+        } else {
+          setProfile(null);
         }
       } catch {
-        // Profile fetch failed silently
+        // Keep state consistent when profile retrieval fails.
+        setProfile(null);
       }
     },
     [supabase]
@@ -64,18 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, fetchProfile]);
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED" && !session) {
-        setUser(null);
-        setProfile(null);
-        setIsLoading(false);
-        router.push("/login");
-        return;
-      }
-
+    let isMounted = true;
+    const applySession = async (session: Session | null) => {
       const currentUser = session?.user ?? null;
+      if (!isMounted) return;
+
       setUser(currentUser);
 
       if (currentUser) {
@@ -84,21 +85,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfile(null);
       }
 
-      setIsLoading(false);
-    });
-
-    // Handle stale tokens on mount by verifying the session is still valid
-    supabase.auth.getSession().then(({ error }) => {
-      if (error?.code === "refresh_token_not_found") {
-        supabase.auth.signOut().then(() => {
-          setUser(null);
-          setProfile(null);
-          router.push("/login");
-        });
+      if (isMounted) {
+        setIsLoading(false);
       }
+    };
+
+    const initializeSession = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.getSession();
+
+      if (!isMounted) return;
+
+      if (error?.code === "refresh_token_not_found") {
+        await supabase.auth.signOut();
+        setUser(null);
+        setProfile(null);
+        setIsLoading(false);
+        router.push("/login");
+        return;
+      }
+
+      await applySession(data.session ?? null);
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED" && !session) {
+        if (!isMounted) return;
+        setUser(null);
+        setProfile(null);
+        setIsLoading(false);
+        router.push("/login");
+        return;
+      }
+
+      await applySession(session ?? null);
     });
 
-    return () => subscription.unsubscribe();
+    initializeSession();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, [supabase, fetchProfile, router]);
 
   const signOut = async () => {

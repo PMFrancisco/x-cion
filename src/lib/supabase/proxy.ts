@@ -25,9 +25,10 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Do not run code between createServerClient and getClaims().
-  const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  // Do not run code between createServerClient and getUser().
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const isAuthPage =
     request.nextUrl.pathname.startsWith("/login") ||

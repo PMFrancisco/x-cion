@@ -31,7 +31,7 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="sticky top-0 flex h-screen w-[68px] flex-col items-center justify-between border-r py-4 xl:w-[260px] xl:items-start xl:px-4">
+      <aside className="sticky top-0 hidden h-screen w-[68px] flex-col items-center justify-between border-r py-4 md:flex xl:w-[260px] xl:items-start xl:px-4">
         <div className="flex flex-col items-center gap-1 xl:items-start">
           <Link
             href="/"

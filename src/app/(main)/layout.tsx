@@ -12,7 +12,7 @@ export default function MainLayout({
   return (
     <div className="mx-auto flex min-h-screen max-w-[1280px]">
       <Sidebar />
-      <main className="min-h-screen flex-1 border-r pb-14 md:pb-0">
+      <main className="min-h-screen flex-1 border-r pb-16 md:pb-0">
         {children}
       </main>
       <RightPanel />
