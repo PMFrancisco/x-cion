@@ -98,7 +98,7 @@ export function EditProfileDialog({
         const {
           data: { publicUrl },
         } = supabase.storage.from("avatars").getPublicUrl(path);
-        avatarUrl = publicUrl;
+        avatarUrl = `${publicUrl}?t=${Date.now()}`;
       }
 
       if (bannerFile) {
@@ -112,7 +112,7 @@ export function EditProfileDialog({
         const {
           data: { publicUrl },
         } = supabase.storage.from("banners").getPublicUrl(path);
-        bannerUrl = publicUrl;
+        bannerUrl = `${publicUrl}?t=${Date.now()}`;
       }
 
       const { error } = await supabase

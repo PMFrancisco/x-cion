@@ -65,6 +65,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED" && !session) {
+        setUser(null);
+        setProfile(null);
+        setIsLoading(false);
+        router.push("/login");
+        return;
+      }
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
@@ -77,8 +85,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     });
 
+    // Handle stale tokens on mount by verifying the session is still valid
+    supabase.auth.getSession().then(({ error }) => {
+      if (error?.code === "refresh_token_not_found") {
+        supabase.auth.signOut().then(() => {
+          setUser(null);
+          setProfile(null);
+          router.push("/login");
+        });
+      }
+    });
+
     return () => subscription.unsubscribe();
-  }, [supabase, fetchProfile]);
+  }, [supabase, fetchProfile, router]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
