@@ -28,8 +28,7 @@ export function MobileNav() {
         <div className="grid h-full grid-cols-6 items-center">
           {items.slice(0, 2).map((item) => {
             const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
+              pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.id}
@@ -55,8 +54,7 @@ export function MobileNav() {
 
           {items.slice(2).map((item) => {
             const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
+              pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.id}

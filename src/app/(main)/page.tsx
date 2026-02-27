@@ -10,13 +10,9 @@ import { cn } from "@/lib/utils";
 export default function HomePage() {
   const [feedType, setFeedType] = useState<"home" | "explore">("home");
 
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    fetchNextPage,
-  } = usePosts({ feedType });
+  const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
+    feedType,
+  });
 
   return (
     <div>

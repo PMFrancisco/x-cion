@@ -20,20 +20,12 @@ const tabs: { value: TabType; label: string }[] = [
 export function ProfileTabs({ userId }: ProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>("posts");
 
-  const feedType =
-    activeTab === "posts"
-      ? "user"
-      : activeTab === "replies"
-      ? "replies"
-      : "likes";
+  const feedType = activeTab === "posts" ? "user" : activeTab === "replies" ? "replies" : "likes";
 
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    fetchNextPage,
-  } = usePosts({ feedType, userId });
+  const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
+    feedType,
+    userId,
+  });
 
   return (
     <div>
@@ -64,8 +56,8 @@ export function ProfileTabs({ userId }: ProfileTabsProps) {
           activeTab === "posts"
             ? "Aún no hay publicaciones"
             : activeTab === "replies"
-            ? "Aún no hay respuestas"
-            : "Aún no hay me gusta"
+              ? "Aún no hay respuestas"
+              : "Aún no hay me gusta"
         }
       />
     </div>

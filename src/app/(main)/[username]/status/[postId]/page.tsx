@@ -54,10 +54,8 @@ export default function PostPage() {
         like_count: p.likes?.length ?? 0,
         reply_count: replyCount ?? 0,
         repost_count: repostCount ?? 0,
-        is_liked:
-          p.likes?.some((l: any) => l.user_id === user?.id) ?? false,
-        is_bookmarked:
-          p.bookmarks?.some((b: any) => b.user_id === user?.id) ?? false,
+        is_liked: p.likes?.some((l: any) => l.user_id === user?.id) ?? false,
+        is_bookmarked: p.bookmarks?.some((b: any) => b.user_id === user?.id) ?? false,
         is_reposted: false,
       } as PostWithCounts;
     },

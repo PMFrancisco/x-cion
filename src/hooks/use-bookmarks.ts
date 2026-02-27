@@ -9,13 +9,7 @@ export function useBookmark() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({
-      postId,
-      isBookmarked,
-    }: {
-      postId: string;
-      isBookmarked: boolean;
-    }) => {
+    mutationFn: async ({ postId, isBookmarked }: { postId: string; isBookmarked: boolean }) => {
       if (!user) throw new Error("Not authenticated");
       const supabase = createClient();
 

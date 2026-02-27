@@ -28,12 +28,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
     <div>
       <div className="relative h-32 bg-secondary sm:h-48">
         {profile.banner_url && (
-          <Image
-            src={profile.banner_url}
-            alt=""
-            fill
-            className="object-cover"
-          />
+          <Image src={profile.banner_url} alt="" fill className="object-cover" />
         )}
       </div>
 
@@ -64,20 +59,18 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
         <div className="mt-3">
           <div className="flex items-center gap-1">
             <h2 className="text-xl font-bold">{profile.display_name}</h2>
-            {profile.role === "admin" && (
-              <Shield className="h-4 w-4 text-[#1d9bf0]" />
-            )}
+            {profile.role === "admin" && <Shield className="h-4 w-4 text-[#1d9bf0]" />}
           </div>
           <p className="text-muted-foreground">@{profile.username}</p>
         </div>
 
-        {profile.bio && (
-          <p className="mt-3 text-[15px]">{profile.bio}</p>
-        )}
+        {profile.bio && <p className="mt-3 text-[15px]">{profile.bio}</p>}
 
         <div className="mt-3 flex items-center gap-1 text-sm text-muted-foreground">
           <CalendarDays className="h-4 w-4" />
-          <span>Se unió en {format(new Date(profile.created_at), "MMMM yyyy", { locale: es })}</span>
+          <span>
+            Se unió en {format(new Date(profile.created_at), "MMMM yyyy", { locale: es })}
+          </span>
         </div>
 
         <div className="mt-3 flex gap-4 text-sm">
@@ -93,11 +86,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
       </div>
 
       {isOwnProfile && (
-        <EditProfileDialog
-          profile={profile}
-          open={editOpen}
-          onOpenChange={setEditOpen}
-        />
+        <EditProfileDialog profile={profile} open={editOpen} onOpenChange={setEditOpen} />
       )}
     </div>
   );

@@ -54,12 +54,7 @@ export interface Bookmark {
   created_at: string;
 }
 
-export type NotificationType =
-  | "like"
-  | "reply"
-  | "follow"
-  | "repost"
-  | "mention";
+export type NotificationType = "like" | "reply" | "follow" | "repost" | "mention";
 
 export interface Notification {
   id: string;

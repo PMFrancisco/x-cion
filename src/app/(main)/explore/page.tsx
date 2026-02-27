@@ -4,13 +4,9 @@ import { PostFeed } from "@/components/post/post-feed";
 import { usePosts } from "@/hooks/use-posts";
 
 export default function ExplorePage() {
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    fetchNextPage,
-  } = usePosts({ feedType: "explore" });
+  const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
+    feedType: "explore",
+  });
 
   return (
     <div>

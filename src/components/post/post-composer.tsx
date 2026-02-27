@@ -56,10 +56,7 @@ export function PostComposer({
     compressed.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setMediaPreviews((prev) => [
-          ...prev,
-          e.target?.result as string,
-        ]);
+        setMediaPreviews((prev) => [...prev, e.target?.result as string]);
       };
       reader.readAsDataURL(file);
     });
@@ -85,9 +82,7 @@ export function PostComposer({
           mediaFiles.map(async (file) => {
             const ext = file.name.split(".").pop();
             const path = `${profile.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-            const { error } = await supabase.storage
-              .from("post-media")
-              .upload(path, file);
+            const { error } = await supabase.storage.from("post-media").upload(path, file);
             if (error) throw error;
             const {
               data: { publicUrl },
@@ -142,12 +137,7 @@ export function PostComposer({
           <div className="mt-2 grid grid-cols-2 gap-2">
             {mediaPreviews.map((preview, i) => (
               <div key={i} className="relative aspect-video overflow-hidden rounded-xl">
-                <Image
-                  src={preview}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
+                <Image src={preview} alt="" fill className="object-cover" />
                 <button
                   onClick={() => removeMedia(i)}
                   className="absolute right-1 top-1 rounded-full bg-black/70 p-1 text-white hover:bg-black/90"
@@ -181,15 +171,11 @@ export function PostComposer({
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">
-              {content.length}/280
-            </span>
+            <span className="text-sm text-muted-foreground">{content.length}/280</span>
             <Button
               onClick={handleSubmit}
               disabled={
-                (!content.trim() && mediaFiles.length === 0) ||
-                createPost.isPending ||
-                uploading
+                (!content.trim() && mediaFiles.length === 0) || createPost.isPending || uploading
               }
               className="rounded-full bg-[#1d9bf0] px-4 text-white hover:bg-[#1a8cd8]"
             >

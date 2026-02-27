@@ -43,15 +43,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         <ThemeProvider>
           <QueryProvider>
             <AuthProvider>
-              <TooltipProvider>
-                {children}
-              </TooltipProvider>
+              <TooltipProvider>{children}</TooltipProvider>
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

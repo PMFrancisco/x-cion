@@ -12,23 +12,15 @@ interface PostThreadProps {
 }
 
 export function PostThread({ post }: PostThreadProps) {
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    fetchNextPage,
-  } = usePosts({ parentId: post.id });
+  const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
+    parentId: post.id,
+  });
 
   return (
     <div>
       <PostCard post={post} variant="detail" />
       <Separator />
-      <PostComposer
-        parentId={post.id}
-        placeholder="Publica tu respuesta"
-        compact
-      />
+      <PostComposer parentId={post.id} placeholder="Publica tu respuesta" compact />
       <Separator />
       <PostFeed
         pages={data?.pages ?? []}

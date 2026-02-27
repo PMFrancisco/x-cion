@@ -49,12 +49,10 @@ export function useFollow() {
           .eq("following_id", targetUserId);
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("follows")
-          .insert({
-            follower_id: user.id,
-            following_id: targetUserId,
-          });
+        const { error } = await supabase.from("follows").insert({
+          follower_id: user.id,
+          following_id: targetUserId,
+        });
         if (error) throw error;
       }
     },

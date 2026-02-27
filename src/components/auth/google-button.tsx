@@ -20,12 +20,7 @@ export function GoogleButton() {
   }
 
   return (
-    <Button
-      variant="outline"
-      className="w-full"
-      onClick={handleGoogleLogin}
-      disabled={loading}
-    >
+    <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={loading}>
       {loading ? (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       ) : (

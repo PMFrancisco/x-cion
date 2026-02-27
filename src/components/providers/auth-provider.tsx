@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
@@ -111,11 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     setAuthError(null);
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
     if (!error && data) {
       setProfile(data as Profile);

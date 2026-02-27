@@ -87,15 +87,11 @@ const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,15}$/;
 export function validateUsername(username: string): string | null {
   if (username.length < 3) return "Mínimo 3 caracteres";
   if (username.length > 15) return "Máximo 15 caracteres";
-  if (!USERNAME_REGEX.test(username))
-    return "Solo letras, números y guiones bajos";
+  if (!USERNAME_REGEX.test(username)) return "Solo letras, números y guiones bajos";
   return null;
 }
 
-export function getSupabaseFileUrl(
-  bucket: string,
-  path: string
-): string {
+export function getSupabaseFileUrl(bucket: string, path: string): string {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   return `${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`;
 }

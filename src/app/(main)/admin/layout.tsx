@@ -4,11 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { isAdmin, isLoading } = useAuth();
 
   if (isLoading) {

@@ -80,8 +80,7 @@ export default function SettingsPage() {
   };
 
   const hasUsernameChanged = username !== (profile?.username ?? "");
-  const canSave =
-    !usernameError && displayName.trim().length > 0 && !saving;
+  const canSave = !usernameError && displayName.trim().length > 0 && !saving;
 
   return (
     <div>
@@ -123,13 +122,9 @@ export default function SettingsPage() {
                   maxLength={15}
                 />
               </div>
-              {usernameError && (
-                <p className="text-xs text-destructive">{usernameError}</p>
-              )}
+              {usernameError && <p className="text-xs text-destructive">{usernameError}</p>}
               {!usernameError && hasUsernameChanged && username.length >= 3 && (
-                <p className="text-xs text-muted-foreground">
-                  Tu perfil estará en /{username}
-                </p>
+                <p className="text-xs text-muted-foreground">Tu perfil estará en /{username}</p>
               )}
             </div>
             <div className="space-y-2">
@@ -185,14 +180,8 @@ export default function SettingsPage() {
 
         <div>
           <h2 className="text-lg font-semibold mb-4">Cuenta</h2>
-          <p className="text-sm text-muted-foreground mb-2">
-            Rol: {profile?.role}
-          </p>
-          <Button
-            variant="destructive"
-            className="mt-4"
-            onClick={signOut}
-          >
+          <p className="text-sm text-muted-foreground mb-2">Rol: {profile?.role}</p>
+          <Button variant="destructive" className="mt-4" onClick={signOut}>
             Cerrar sesión
           </Button>
         </div>

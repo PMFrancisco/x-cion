@@ -42,6 +42,7 @@ Copy the contents of `supabase/migrations/001_initial_schema.sql` and run it in 
 ### 4. Enable Google OAuth (optional)
 
 In Supabase Dashboard > Authentication > Providers > Google:
+
 - Enable Google provider
 - Add your Google OAuth client ID and secret
 - Set redirect URL to `http://localhost:3000/auth/callback`

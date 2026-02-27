@@ -52,9 +52,7 @@ export function LoginForm() {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            O continúa con
-          </span>
+          <span className="bg-background px-2 text-muted-foreground">O continúa con</span>
         </div>
       </div>
 
@@ -82,9 +80,7 @@ export function LoginForm() {
           />
         </div>
 
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

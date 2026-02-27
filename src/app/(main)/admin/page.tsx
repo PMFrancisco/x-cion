@@ -35,18 +35,9 @@ export default function AdminPage() {
   });
 
   const changeRoleMutation = useMutation({
-    mutationFn: async ({
-      userId,
-      newRole,
-    }: {
-      userId: string;
-      newRole: UserRole;
-    }) => {
+    mutationFn: async ({ userId, newRole }: { userId: string; newRole: UserRole }) => {
       const supabase = createClient();
-      const { error } = await supabase
-        .from("profiles")
-        .update({ role: newRole })
-        .eq("id", userId);
+      const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -71,9 +62,7 @@ export default function AdminPage() {
         </Button>
         <div>
           <h1 className="text-xl font-bold">Panel de administración</h1>
-          <p className="text-sm text-muted-foreground">
-            {users?.length ?? 0} usuarios
-          </p>
+          <p className="text-sm text-muted-foreground">{users?.length ?? 0} usuarios</p>
         </div>
       </div>
 
@@ -84,37 +73,24 @@ export default function AdminPage() {
       ) : (
         <div className="divide-y">
           {users?.map((user) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between px-4 py-3"
-            >
+            <div key={user.id} className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatar_url ?? undefined} />
-                  <AvatarFallback>
-                    {getInitials(user.display_name)}
-                  </AvatarFallback>
+                  <AvatarFallback>{getInitials(user.display_name)}</AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">
-                      {user.display_name}
-                    </span>
+                    <span className="font-semibold">{user.display_name}</span>
                     <Badge
-                      variant={
-                        user.role === "admin" ? "default" : "secondary"
-                      }
+                      variant={user.role === "admin" ? "default" : "secondary"}
                       className="text-xs"
                     >
-                      {user.role === "admin" && (
-                        <Shield className="mr-1 h-3 w-3" />
-                      )}
+                      {user.role === "admin" && <Shield className="mr-1 h-3 w-3" />}
                       {user.role}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    @{user.username}
-                  </p>
+                  <p className="text-sm text-muted-foreground">@{user.username}</p>
                 </div>
               </div>
 

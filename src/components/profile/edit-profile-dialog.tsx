@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,11 +23,7 @@ interface EditProfileDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditProfileDialog({
-  profile,
-  open,
-  onOpenChange,
-}: EditProfileDialogProps) {
+export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDialogProps) {
   const { refreshProfile } = useAuth();
   const queryClient = useQueryClient();
   const [displayName, setDisplayName] = useState(profile.display_name);
@@ -53,9 +44,7 @@ export function EditProfileDialog({
     setUsernameError(validateUsername(sanitized));
   };
 
-  const handleAvatarChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -71,9 +60,7 @@ export function EditProfileDialog({
     reader.readAsDataURL(compressed);
   };
 
-  const handleBannerChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -208,9 +195,7 @@ export function EditProfileDialog({
           <div className="-mt-10 ml-4">
             <div className="relative inline-block">
               <Avatar className="h-20 w-20 border-4 border-background">
-                <AvatarImage
-                  src={avatarPreview ?? profile.avatar_url ?? undefined}
-                />
+                <AvatarImage src={avatarPreview ?? profile.avatar_url ?? undefined} />
                 <AvatarFallback className="text-2xl">
                   {getInitials(profile.display_name)}
                 </AvatarFallback>
@@ -254,9 +239,7 @@ export function EditProfileDialog({
                 maxLength={15}
               />
             </div>
-            {usernameError && (
-              <p className="text-xs text-destructive">{usernameError}</p>
-            )}
+            {usernameError && <p className="text-xs text-destructive">{usernameError}</p>}
           </div>
 
           <div className="space-y-2">
@@ -269,16 +252,11 @@ export function EditProfileDialog({
               rows={3}
               maxLength={160}
             />
-            <p className="text-xs text-muted-foreground">
-              {bio.length}/160
-            </p>
+            <p className="text-xs text-muted-foreground">{bio.length}/160</p>
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button

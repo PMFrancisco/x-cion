@@ -30,7 +30,8 @@ const withPWA = withPWAInit({
         },
       },
       {
-        urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/public\/(avatars|banners)\/.*/i,
+        urlPattern:
+          /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/public\/(avatars|banners)\/.*/i,
         handler: "StaleWhileRevalidate",
         options: {
           cacheName: "supabase-profiles",

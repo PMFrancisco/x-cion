@@ -4,12 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  MoreHorizontal,
-  Trash2,
-  Pencil,
-  Shield,
-} from "lucide-react";
+import { MoreHorizontal, Trash2, Pencil, Shield } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PostActions } from "./post-actions";
@@ -39,11 +29,7 @@ interface PostCardProps {
   showActions?: boolean;
 }
 
-export function PostCard({
-  post,
-  variant = "feed",
-  showActions = true,
-}: PostCardProps) {
+export function PostCard({ post, variant = "feed", showActions = true }: PostCardProps) {
   const router = useRouter();
   const { user, isAdmin } = useAuth();
   const deletePost = useDeletePost();
@@ -96,9 +82,7 @@ export function PostCard({
           >
             <Avatar className="h-10 w-10">
               <AvatarImage src={post.author.avatar_url ?? undefined} />
-              <AvatarFallback>
-                {getInitials(post.author.display_name)}
-              </AvatarFallback>
+              <AvatarFallback>{getInitials(post.author.display_name)}</AvatarFallback>
             </Avatar>
           </Link>
 
@@ -111,9 +95,7 @@ export function PostCard({
               >
                 {post.author.display_name}
               </Link>
-              {post.author.role === "admin" && (
-                <Shield className="h-3.5 w-3.5 text-[#1d9bf0]" />
-              )}
+              {post.author.role === "admin" && <Shield className="h-3.5 w-3.5 text-[#1d9bf0]" />}
               <Link
                 href={`/${post.author.username}`}
                 onClick={(e) => e.stopPropagation()}
@@ -178,10 +160,7 @@ export function PostCard({
                 )}
               >
                 {post.media_urls.map((url, i) => (
-                  <div
-                    key={i}
-                    className="relative aspect-video overflow-hidden"
-                  >
+                  <div key={i} className="relative aspect-video overflow-hidden">
                     <Image
                       src={url}
                       alt=""
@@ -212,15 +191,11 @@ export function PostCard({
               className="min-h-[120px] resize-none"
             />
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
-                {editContent.length}/280
-              </span>
+              <span className="text-sm text-muted-foreground">{editContent.length}/280</span>
               <Button
                 onClick={handleEdit}
                 disabled={
-                  updatePost.isPending ||
-                  !editContent.trim() ||
-                  editContent === post.content
+                  updatePost.isPending || !editContent.trim() || editContent === post.content
                 }
                 className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8]"
               >

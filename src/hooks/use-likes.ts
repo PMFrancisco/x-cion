@@ -9,13 +9,7 @@ export function useLike() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({
-      postId,
-      isLiked,
-    }: {
-      postId: string;
-      isLiked: boolean;
-    }) => {
+    mutationFn: async ({ postId, isLiked }: { postId: string; isLiked: boolean }) => {
       if (!user) throw new Error("Not authenticated");
       const supabase = createClient();
 

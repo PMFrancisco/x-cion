@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  Search,
-  Bookmark,
-  User,
-  Settings,
-  Shield,
-  Feather,
-  LogOut,
-} from "lucide-react";
+import { Home, Search, Bookmark, User, Settings, Shield, Feather, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
@@ -91,7 +82,7 @@ export function Sidebar() {
             )}
           >
             <Settings className="h-6 w-6" />
-              <span className="hidden xl:block">Configuración</span>
+            <span className="hidden xl:block">Configuración</span>
           </Link>
 
           <Button

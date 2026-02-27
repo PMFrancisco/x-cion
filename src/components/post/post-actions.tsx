@@ -46,9 +46,7 @@ export function PostActions({ post }: PostActionsProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <MessageCircle className="h-4 w-4 group-hover:text-[#1d9bf0]" />
-        {post.reply_count > 0 && (
-          <span className="text-xs">{post.reply_count}</span>
-        )}
+        {post.reply_count > 0 && <span className="text-xs">{post.reply_count}</span>}
       </Button>
 
       <Button
@@ -58,9 +56,7 @@ export function PostActions({ post }: PostActionsProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <Repeat2 className="h-4 w-4 group-hover:text-green-500" />
-        {post.repost_count > 0 && (
-          <span className="text-xs">{post.repost_count}</span>
-        )}
+        {post.repost_count > 0 && <span className="text-xs">{post.repost_count}</span>}
       </Button>
 
       <Button
@@ -74,14 +70,9 @@ export function PostActions({ post }: PostActionsProps) {
         disabled={likeMutation.isPending}
       >
         <Heart
-          className={cn(
-            "h-4 w-4 group-hover:text-pink-500",
-            post.is_liked && "fill-current"
-          )}
+          className={cn("h-4 w-4 group-hover:text-pink-500", post.is_liked && "fill-current")}
         />
-        {post.like_count > 0 && (
-          <span className="text-xs">{post.like_count}</span>
-        )}
+        {post.like_count > 0 && <span className="text-xs">{post.like_count}</span>}
       </Button>
 
       <Button
@@ -95,10 +86,7 @@ export function PostActions({ post }: PostActionsProps) {
         disabled={bookmarkMutation.isPending}
       >
         <Bookmark
-          className={cn(
-            "h-4 w-4 group-hover:text-[#1d9bf0]",
-            post.is_bookmarked && "fill-current"
-          )}
+          className={cn("h-4 w-4 group-hover:text-[#1d9bf0]", post.is_bookmarked && "fill-current")}
         />
       </Button>
 
