@@ -28,7 +28,7 @@ export function Sidebar() {
             href="/"
             className="mb-4 flex h-12 w-12 items-center justify-center rounded-full transition-colors hover:bg-accent"
           >
-            <span className="text-2xl font-bold text-[#1d9bf0]">Xcion</span>
+            <span className="text-2xl font-bold text-xcion-blue">Xcion</span>
           </Link>
 
           {navItems.map((item) => {
