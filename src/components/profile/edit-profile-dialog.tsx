@@ -15,7 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { createClient } from "@/lib/supabase/client";
-import { getInitials } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import { getInitials, validateUsername } from "@/lib/utils";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 import Image from "next/image";
@@ -33,7 +34,10 @@ export function EditProfileDialog({
   onOpenChange,
 }: EditProfileDialogProps) {
   const { refreshProfile } = useAuth();
+  const queryClient = useQueryClient();
   const [displayName, setDisplayName] = useState(profile.display_name);
+  const [username, setUsername] = useState(profile.username);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
   const [bio, setBio] = useState(profile.bio);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -42,6 +46,12 @@ export function EditProfileDialog({
   const [saving, setSaving] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUsernameChange = (value: string) => {
+    const sanitized = value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+    setUsername(sanitized);
+    setUsernameError(validateUsername(sanitized));
+  };
 
   const handleAvatarChange = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -80,10 +90,31 @@ export function EditProfileDialog({
   };
 
   const handleSave = async () => {
+    const formatError = validateUsername(username);
+    if (formatError) {
+      setUsernameError(formatError);
+      return;
+    }
+
     setSaving(true);
     const supabase = createClient();
 
     try {
+      if (username !== profile.username) {
+        const { data: existing } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("username", username)
+          .neq("id", profile.id)
+          .maybeSingle();
+
+        if (existing) {
+          setUsernameError("Este handle ya está en uso");
+          setSaving(false);
+          return;
+        }
+      }
+
       let avatarUrl = profile.avatar_url;
       let bannerUrl = profile.banner_url;
 
@@ -119,6 +150,7 @@ export function EditProfileDialog({
         .from("profiles")
         .update({
           display_name: displayName,
+          username,
           bio,
           avatar_url: avatarUrl,
           banner_url: bannerUrl,
@@ -128,6 +160,8 @@ export function EditProfileDialog({
       if (error) throw error;
 
       await refreshProfile();
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Perfil actualizado");
       onOpenChange(false);
     } catch {
@@ -207,6 +241,25 @@ export function EditProfileDialog({
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="editUsername">Handle</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                @
+              </span>
+              <Input
+                id="editUsername"
+                value={username}
+                onChange={(e) => handleUsernameChange(e.target.value)}
+                className="pl-7"
+                maxLength={15}
+              />
+            </div>
+            {usernameError && (
+              <p className="text-xs text-destructive">{usernameError}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="editBio">Biografía</Label>
             <Textarea
               id="editBio"
@@ -230,7 +283,7 @@ export function EditProfileDialog({
             </Button>
             <Button
               onClick={handleSave}
-              disabled={saving || !displayName.trim()}
+              disabled={saving || !displayName.trim() || !!usernameError}
               className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8]"
             >
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

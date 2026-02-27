@@ -10,26 +10,60 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/use-auth";
 import { createClient } from "@/lib/supabase/client";
+import { validateUsername } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
 export default function SettingsPage() {
   const router = useRouter();
   const { profile, refreshProfile, signOut } = useAuth();
+  const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
+  const [username, setUsername] = useState(profile?.username ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [saving, setSaving] = useState(false);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+
+  const handleUsernameChange = (value: string) => {
+    const sanitized = value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+    setUsername(sanitized);
+    setUsernameError(validateUsername(sanitized));
+  };
 
   const handleSave = async () => {
     if (!profile) return;
-    setSaving(true);
 
+    const formatError = validateUsername(username);
+    if (formatError) {
+      setUsernameError(formatError);
+      return;
+    }
+
+    setSaving(true);
     const supabase = createClient();
+
+    if (username !== profile.username) {
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", username)
+        .neq("id", profile.id)
+        .maybeSingle();
+
+      if (existing) {
+        setUsernameError("Este handle ya está en uso");
+        setSaving(false);
+        return;
+      }
+    }
+
     const { error } = await supabase
       .from("profiles")
       .update({
         display_name: displayName,
+        username,
         bio,
       })
       .eq("id", profile.id);
@@ -39,9 +73,15 @@ export default function SettingsPage() {
     } else {
       toast.success("Perfil actualizado");
       await refreshProfile();
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     }
     setSaving(false);
   };
+
+  const hasUsernameChanged = username !== (profile?.username ?? "");
+  const canSave =
+    !usernameError && displayName.trim().length > 0 && !saving;
 
   return (
     <div>
@@ -62,12 +102,35 @@ export default function SettingsPage() {
           <h2 className="text-lg font-semibold mb-4">Perfil</h2>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="displayName">Nombre de usuario</Label>
+              <Label htmlFor="displayName">Nombre para mostrar</Label>
               <Input
                 id="displayName"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="username">Handle</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  @
+                </span>
+                <Input
+                  id="username"
+                  value={username}
+                  onChange={(e) => handleUsernameChange(e.target.value)}
+                  className="pl-7"
+                  maxLength={15}
+                />
+              </div>
+              {usernameError && (
+                <p className="text-xs text-destructive">{usernameError}</p>
+              )}
+              {!usernameError && hasUsernameChanged && username.length >= 3 && (
+                <p className="text-xs text-muted-foreground">
+                  Tu perfil estará en /{username}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="bio">Biografía</Label>
@@ -83,7 +146,7 @@ export default function SettingsPage() {
             </div>
             <Button
               onClick={handleSave}
-              disabled={saving}
+              disabled={!canSave}
               className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8]"
             >
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -123,9 +186,6 @@ export default function SettingsPage() {
         <div>
           <h2 className="text-lg font-semibold mb-4">Cuenta</h2>
           <p className="text-sm text-muted-foreground mb-2">
-            Usuario: @{profile?.username}
-          </p>
-          <p className="text-sm text-muted-foreground">
             Rol: {profile?.role}
           </p>
           <Button
