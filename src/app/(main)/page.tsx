@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 export default function HomePage() {
-  const [feedType, setFeedType] = useState<"home" | "explore">("home");
+  const [feedType, setFeedType] = useState<"home" | "explore">("explore");
 
   const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
     feedType,
@@ -20,10 +20,10 @@ export default function HomePage() {
         <h1 className="px-4 py-3 text-xl font-bold">Inicio</h1>
         <div className="flex">
           <button
-            onClick={() => setFeedType("home")}
+            onClick={() => setFeedType("explore")}
             className={cn(
               "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
-              feedType === "home"
+              feedType === "explore"
                 ? "border-b-2 border-[#1d9bf0] text-foreground"
                 : "text-muted-foreground"
             )}
@@ -31,10 +31,10 @@ export default function HomePage() {
             Para ti
           </button>
           <button
-            onClick={() => setFeedType("explore")}
+            onClick={() => setFeedType("home")}
             className={cn(
               "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
-              feedType === "explore"
+              feedType === "home"
                 ? "border-b-2 border-[#1d9bf0] text-foreground"
                 : "text-muted-foreground"
             )}
