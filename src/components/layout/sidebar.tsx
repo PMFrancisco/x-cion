@@ -87,7 +87,7 @@ export function Sidebar() {
 
           <Button
             onClick={() => setComposeOpen(true)}
-            className="mt-4 h-12 w-12 rounded-full bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] xl:w-full"
+            className="mt-4 h-12 w-12 rounded-full bg-xcion-blue text-white hover:bg-xcion-blue-hover xl:w-full"
           >
             <Feather className="h-5 w-5 xl:hidden" />
             <span className="hidden xl:block">Publicar</span>
