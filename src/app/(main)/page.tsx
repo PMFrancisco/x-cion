@@ -24,7 +24,7 @@ export default function HomePage() {
             className={cn(
               "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
               feedType === "explore"
-                ? "border-b-2 border-[#1d9bf0] text-foreground"
+                ? "border-b-2 border-xcion-blue text-foreground"
                 : "text-muted-foreground"
             )}
           >
@@ -35,7 +35,7 @@ export default function HomePage() {
             className={cn(
               "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
               feedType === "home"
-                ? "border-b-2 border-[#1d9bf0] text-foreground"
+                ? "border-b-2 border-xcion-blue text-foreground"
                 : "text-muted-foreground"
             )}
           >
