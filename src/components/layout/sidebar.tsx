@@ -28,7 +28,7 @@ export function Sidebar() {
             href="/"
             className="mb-4 flex h-12 w-12 items-center justify-center rounded-full transition-colors hover:bg-accent"
           >
-            <span className="text-2xl font-bold text-xcion-blue">Xcion</span>
+            <span className="text-2xl font-bold text-xcion-primary">Xcion</span>
           </Link>
 
           {navItems.map((item) => {
@@ -85,7 +85,7 @@ export function Sidebar() {
 
           <Button
             onClick={() => setComposeOpen(true)}
-            className="mt-4 h-12 w-12 rounded-full bg-xcion-blue text-white hover:bg-xcion-blue-hover xl:w-full"
+            className="mt-4 h-12 w-12 rounded-full bg-xcion-primary text-white hover:bg-xcion-primary-hover xl:w-full"
           >
             <Feather className="h-5 w-5 xl:hidden" />
             <span className="hidden xl:block">Publicar</span>

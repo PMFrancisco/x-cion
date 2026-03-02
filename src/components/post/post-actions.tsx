@@ -42,10 +42,10 @@ export function PostActions({ post }: PostActionsProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="group gap-1 px-2 text-muted-foreground hover:text-[#1d9bf0]"
+        className="group gap-1 px-2 text-muted-foreground hover:text-xcion-primary"
         onClick={(e) => e.stopPropagation()}
       >
-        <MessageCircle className="h-4 w-4 group-hover:text-[#1d9bf0]" />
+        <MessageCircle className="h-4 w-4 group-hover:text-xcion-primary" />
         {post.reply_count > 0 && <span className="text-xs">{post.reply_count}</span>}
       </Button>
 
@@ -79,21 +79,24 @@ export function PostActions({ post }: PostActionsProps) {
         variant="ghost"
         size="sm"
         className={cn(
-          "group gap-1 px-2 hover:text-[#1d9bf0]",
-          post.is_bookmarked ? "text-[#1d9bf0]" : "text-muted-foreground"
+          "group gap-1 px-2 hover:text-xcion-primary",
+          post.is_bookmarked ? "text-xcion-primary" : "text-muted-foreground"
         )}
         onClick={handleBookmark}
         disabled={bookmarkMutation.isPending}
       >
         <Bookmark
-          className={cn("h-4 w-4 group-hover:text-[#1d9bf0]", post.is_bookmarked && "fill-current")}
+          className={cn(
+            "h-4 w-4 group-hover:text-xcion-primary",
+            post.is_bookmarked && "fill-current"
+          )}
         />
       </Button>
 
       <Button
         variant="ghost"
         size="sm"
-        className="px-2 text-muted-foreground hover:text-[#1d9bf0]"
+        className="px-2 text-muted-foreground hover:text-xcion-primary"
         onClick={handleShare}
       >
         <Share className="h-4 w-4" />

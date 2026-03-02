@@ -68,7 +68,7 @@ export default function SearchPage() {
               className={cn(
                 "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
                 tab === "posts"
-                  ? "border-b-2 border-xcion-blue text-foreground"
+                  ? "border-b-2 border-xcion-primary text-foreground"
                   : "text-muted-foreground"
               )}
             >
@@ -79,7 +79,7 @@ export default function SearchPage() {
               className={cn(
                 "flex-1 py-3 text-center text-sm font-medium transition-colors hover:bg-accent/50",
                 tab === "people"
-                  ? "border-b-2 border-xcion-blue text-foreground"
+                  ? "border-b-2 border-xcion-primary text-foreground"
                   : "text-muted-foreground"
               )}
             >
@@ -102,7 +102,7 @@ export default function SearchPage() {
 
       {isSearching && searchLoading && (
         <div className="flex justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-xcion-blue" />
+          <Loader2 className="h-6 w-6 animate-spin text-xcion-primary" />
         </div>
       )}
 

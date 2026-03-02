@@ -64,7 +64,7 @@ export default function PostPage() {
   if (isLoading || authLoading) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-[#1d9bf0]" />
+        <Loader2 className="h-6 w-6 animate-spin text-xcion-primary" />
       </div>
     );
   }

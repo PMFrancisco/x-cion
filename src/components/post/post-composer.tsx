@@ -162,7 +162,7 @@ export function PostComposer({
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-[#1d9bf0]"
+              className="h-9 w-9 text-xcion-primary"
               onClick={() => fileInputRef.current?.click()}
               disabled={mediaFiles.length >= 4}
             >
@@ -177,7 +177,7 @@ export function PostComposer({
               disabled={
                 (!content.trim() && mediaFiles.length === 0) || createPost.isPending || uploading
               }
-              className="rounded-full bg-[#1d9bf0] px-4 text-white hover:bg-[#1a8cd8]"
+              className="rounded-full bg-xcion-primary px-4 text-white hover:bg-xcion-primary-hover"
             >
               {(createPost.isPending || uploading) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

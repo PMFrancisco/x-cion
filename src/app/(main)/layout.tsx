@@ -15,7 +15,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <main className="min-h-screen min-w-0 flex-1 border-r pb-16 md:pb-0">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-xcion-blue" />
+            <Loader2 className="h-8 w-8 animate-spin text-xcion-primary" />
           </div>
         ) : (
           children

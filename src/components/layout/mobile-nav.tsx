@@ -46,7 +46,7 @@ export function MobileNav() {
           <Button
             variant="ghost"
             onClick={() => setComposeOpen(true)}
-            className="h-full rounded-none text-xcion-blue hover:bg-accent/50 hover:text-xcion-blue"
+            className="h-full rounded-none text-xcion-primary hover:bg-accent/50 hover:text-xcion-primary"
             aria-label="Publicar"
           >
             <Feather className="h-5 w-5" />

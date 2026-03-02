@@ -83,7 +83,7 @@ export default function OnboardingPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-xcion-blue" />
+        <Loader2 className="h-8 w-8 animate-spin text-xcion-primary" />
       </div>
     );
   }
@@ -127,7 +127,7 @@ export default function OnboardingPage() {
 
         <Button
           type="submit"
-          className="w-full bg-xcion-blue text-white hover:bg-xcion-blue-hover"
+          className="w-full bg-xcion-primary text-white hover:bg-xcion-primary-hover"
           disabled={saving || !username || !displayName.trim() || !!usernameError}
         >
           {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

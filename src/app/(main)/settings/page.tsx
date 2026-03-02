@@ -142,7 +142,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleSave}
               disabled={!canSave}
-              className="bg-xcion-blue text-white hover:bg-xcion-blue-hover"
+              className="bg-xcion-primary text-white hover:bg-xcion-primary-hover"
             >
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Guardar cambios

@@ -59,7 +59,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
         <div className="mt-3">
           <div className="flex items-center gap-1">
             <h2 className="text-xl font-bold">{profile.display_name}</h2>
-            {profile.role === "admin" && <Shield className="h-4 w-4 text-[#1d9bf0]" />}
+            {profile.role === "admin" && <Shield className="h-4 w-4 text-xcion-primary" />}
           </div>
           <p className="text-muted-foreground">@{profile.username}</p>
         </div>

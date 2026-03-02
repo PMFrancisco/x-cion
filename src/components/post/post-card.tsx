@@ -95,7 +95,9 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
               >
                 {post.author.display_name}
               </Link>
-              {post.author.role === "admin" && <Shield className="h-3.5 w-3.5 text-[#1d9bf0]" />}
+              {post.author.role === "admin" && (
+                <Shield className="h-3.5 w-3.5 text-xcion-primary" />
+              )}
               <Link
                 href={`/${post.author.username}`}
                 onClick={(e) => e.stopPropagation()}
@@ -197,7 +199,7 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
                 disabled={
                   updatePost.isPending || !editContent.trim() || editContent === post.content
                 }
-                className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8]"
+                className="bg-xcion-primary text-white hover:bg-xcion-primary-hover"
               >
                 Guardar
               </Button>

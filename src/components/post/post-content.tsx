@@ -15,7 +15,7 @@ export function PostContent({ text }: { text: string }) {
               <Link
                 key={i}
                 href={`/${segment.value.slice(1)}`}
-                className="text-[#1d9bf0] hover:underline"
+                className="text-xcion-primary hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 {segment.value}
@@ -23,7 +23,7 @@ export function PostContent({ text }: { text: string }) {
             );
           case "hashtag":
             return (
-              <span key={i} className="text-[#1d9bf0]">
+              <span key={i} className="text-xcion-primary">
                 {segment.value}
               </span>
             );
@@ -34,7 +34,7 @@ export function PostContent({ text }: { text: string }) {
                 href={segment.value}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#1d9bf0] hover:underline"
+                className="text-xcion-primary hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 {segment.value.replace(/^https?:\/\//, "").slice(0, 30)}
