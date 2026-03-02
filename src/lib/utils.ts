@@ -7,7 +7,6 @@ import {
   differenceInDays,
   format,
 } from "date-fns";
-import type React from "react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

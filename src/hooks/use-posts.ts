@@ -3,7 +3,7 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import type { PostWithCounts } from "@/lib/types";
+import type { Post, Profile, PostWithCounts } from "@/lib/types";
 
 const PAGE_SIZE = 20;
 
@@ -85,10 +85,17 @@ async function fetchPosts({
 
   if (error) throw error;
 
-  const postIds = (data ?? []).map((p: any) => p.id);
+  type RawPost = Post & {
+    author: Profile;
+    likes?: { user_id: string }[];
+    bookmarks?: { user_id: string }[];
+  };
 
-  let replyCounts: Record<string, number> = {};
-  let repostCounts: Record<string, number> = {};
+  const rows = (data ?? []) as RawPost[];
+  const postIds = rows.map((p) => p.id);
+
+  const replyCounts: Record<string, number> = {};
+  const repostCounts: Record<string, number> = {};
 
   if (postIds.length > 0) {
     const { data: replies } = await supabase
@@ -96,8 +103,8 @@ async function fetchPosts({
       .select("parent_id")
       .in("parent_id", postIds);
 
-    (replies ?? []).forEach((r: any) => {
-      replyCounts[r.parent_id] = (replyCounts[r.parent_id] ?? 0) + 1;
+    (replies ?? []).forEach((r: { parent_id: string | null }) => {
+      if (r.parent_id) replyCounts[r.parent_id] = (replyCounts[r.parent_id] ?? 0) + 1;
     });
 
     const { data: reposts } = await supabase
@@ -105,12 +112,12 @@ async function fetchPosts({
       .select("repost_of")
       .in("repost_of", postIds);
 
-    (reposts ?? []).forEach((r: any) => {
-      repostCounts[r.repost_of] = (repostCounts[r.repost_of] ?? 0) + 1;
+    (reposts ?? []).forEach((r: { repost_of: string | null }) => {
+      if (r.repost_of) repostCounts[r.repost_of] = (repostCounts[r.repost_of] ?? 0) + 1;
     });
   }
 
-  const posts: PostWithCounts[] = (data ?? []).map((post: any) => ({
+  const posts: PostWithCounts[] = rows.map((post) => ({
     id: post.id,
     author_id: post.author_id,
     content: post.content,
@@ -123,8 +130,8 @@ async function fetchPosts({
     like_count: post.likes?.length ?? 0,
     reply_count: replyCounts[post.id] ?? 0,
     repost_count: repostCounts[post.id] ?? 0,
-    is_liked: post.likes?.some((l: any) => l.user_id === currentUserId) ?? false,
-    is_bookmarked: post.bookmarks?.some((b: any) => b.user_id === currentUserId) ?? false,
+    is_liked: post.likes?.some((l) => l.user_id === currentUserId) ?? false,
+    is_bookmarked: post.bookmarks?.some((b) => b.user_id === currentUserId) ?? false,
     is_reposted: false,
   }));
 

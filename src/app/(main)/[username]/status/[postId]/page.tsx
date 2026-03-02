@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { PostThread } from "@/components/post/post-thread";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { PostWithCounts } from "@/lib/types";
+import type { Post, Profile, PostWithCounts } from "@/lib/types";
 
 export default function PostPage() {
   const params = useParams();
@@ -47,15 +47,19 @@ export default function PostPage() {
         .select("*", { count: "exact", head: true })
         .eq("repost_of", postId);
 
-      const p: any = data;
+      const p = data as Post & {
+        author: Profile;
+        likes?: { user_id: string }[];
+        bookmarks?: { user_id: string }[];
+      };
       return {
         ...p,
         author: p.author,
         like_count: p.likes?.length ?? 0,
         reply_count: replyCount ?? 0,
         repost_count: repostCount ?? 0,
-        is_liked: p.likes?.some((l: any) => l.user_id === user?.id) ?? false,
-        is_bookmarked: p.bookmarks?.some((b: any) => b.user_id === user?.id) ?? false,
+        is_liked: p.likes?.some((l) => l.user_id === user?.id) ?? false,
+        is_bookmarked: p.bookmarks?.some((b) => b.user_id === user?.id) ?? false,
         is_reposted: false,
       } as PostWithCounts;
     },
