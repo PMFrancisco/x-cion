@@ -48,18 +48,16 @@ export function Sidebar() {
             );
           })}
 
-          {profile && (
-            <Link
-              href={`/${profile.username}`}
-              className={cn(
-                "flex h-12 items-center gap-4 rounded-full px-3 transition-colors hover:bg-accent xl:pr-6",
-                pathname === `/${profile.username}` && "font-bold"
-              )}
-            >
-              <User className="h-6 w-6" />
-              <span className="hidden xl:block">Perfil</span>
-            </Link>
-          )}
+          <Link
+            href={profile ? `/${profile.username}` : "#"}
+            className={cn(
+              "flex h-12 items-center gap-4 rounded-full px-3 transition-colors hover:bg-accent xl:pr-6",
+              profile && pathname === `/${profile.username}` && "font-bold"
+            )}
+          >
+            <User className="h-6 w-6" />
+            <span className="hidden xl:block">Perfil</span>
+          </Link>
 
           {isAdmin && (
             <Link

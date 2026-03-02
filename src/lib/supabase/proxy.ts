@@ -32,6 +32,7 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/register");
   const isAuthCallback = request.nextUrl.pathname.startsWith("/auth");
+  const isOnboarding = request.nextUrl.pathname.startsWith("/onboarding");
 
   if (isAuthCallback) {
     return supabaseResponse;
@@ -47,6 +48,10 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);
+  }
+
+  if (isOnboarding) {
+    return supabaseResponse;
   }
 
   return supabaseResponse;

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import type { User } from "@supabase/supabase-js";
@@ -11,6 +11,7 @@ interface AuthContextType {
   profile: Profile | null;
   isAdmin: boolean;
   isLoading: boolean;
+  needsOnboarding: boolean;
   authError: string | null;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -21,6 +22,7 @@ export const AuthContext = createContext<AuthContextType>({
   profile: null,
   isAdmin: false,
   isLoading: true,
+  needsOnboarding: false,
   authError: null,
   signOut: async () => {},
   refreshProfile: async () => {},
@@ -37,8 +39,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
-  // Effect 1: Auth state listener — synchronous only, no Supabase calls.
-  // onAuthStateChange fires INITIAL_SESSION on subscribe, replacing getSession().
   useEffect(() => {
     const {
       data: { subscription },
@@ -50,25 +50,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/login");
         return;
       }
-      setUser(session?.user ?? null);
+      if (event === "INITIAL_SESSION" && !session) {
+        setIsLoading(false);
+        return;
+      }
+      const newUser = session?.user ?? null;
+      setUser((prev) => {
+        if (prev?.id === newUser?.id) return prev;
+        return newUser;
+      });
     });
 
     return () => subscription.unsubscribe();
   }, [supabase, router]);
 
-  // Effect 2: Fetch profile when user changes — deferred, cancellable, with retry.
   useEffect(() => {
-    if (!user) {
-      setProfile(null);
-      setIsLoading(false);
-      return;
-    }
+    if (!user) return;
 
     let cancelled = false;
-    setIsLoading(true);
-    setAuthError(null);
 
     const load = async () => {
+      setIsLoading(true);
+      setAuthError(null);
+
       for (let attempt = 0; attempt < PROFILE_MAX_ATTEMPTS; attempt++) {
         const { data, error } = await supabase
           .from("profiles")
@@ -119,8 +123,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setProfile(null);
     router.push("/login");
-    router.refresh();
   }, [supabase, router]);
+
+  const needsOnboarding = !!profile && !profile.onboarding_completed;
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (isLoading) return;
+    const isOnboardingPage = pathname === "/onboarding";
+
+    if (needsOnboarding && !isOnboardingPage) {
+      router.replace("/onboarding");
+    } else if (!needsOnboarding && isOnboardingPage && profile) {
+      router.replace("/");
+    }
+  }, [needsOnboarding, pathname, isLoading, profile, router]);
 
   return (
     <AuthContext.Provider
@@ -129,6 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profile,
         isAdmin: profile?.role === "admin",
         isLoading,
+        needsOnboarding,
         authError,
         signOut,
         refreshProfile,

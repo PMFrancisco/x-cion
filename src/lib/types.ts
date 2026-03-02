@@ -8,6 +8,7 @@ export interface Profile {
   avatar_url: string | null;
   banner_url: string | null;
   role: UserRole;
+  onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
 }
