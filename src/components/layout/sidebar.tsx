@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Home, Search, Bookmark, User, Settings, Shield, Feather, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,9 +27,10 @@ export function Sidebar() {
         <div className="flex flex-col items-center gap-1 xl:items-start">
           <Link
             href="/"
-            className="mb-4 flex h-12 w-12 items-center justify-center rounded-full transition-colors hover:bg-accent"
+            className="mb-4 flex h-12 items-center gap-2 rounded-full px-2 transition-colors hover:bg-accent"
           >
-            <span className="text-2xl font-bold text-xcion-primary">Xcion</span>
+            <Image src="/icons/icon-192x192.png" alt="Xcion" width={32} height={32} />
+            <span className="hidden text-2xl font-bold text-xcion-primary xl:block">Xcion</span>
           </Link>
 
           {navItems.map((item) => {

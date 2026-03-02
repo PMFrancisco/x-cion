@@ -1,8 +1,11 @@
+import Image from "next/image";
+
 export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-6">
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <Image src="/icons/icon-192x192.png" alt="Xcion" width={64} height={64} priority />
           <span className="text-4xl font-bold text-xcion-primary">Xcion</span>
         </div>
         {children}

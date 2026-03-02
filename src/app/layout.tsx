@@ -22,10 +22,24 @@ export const metadata: Metadata = {
   title: "Xcion",
   description: "Una plataforma social",
   manifest: "/manifest.json",
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Xcion",
+  },
+  openGraph: {
+    title: "Xcion",
+    description: "Una plataforma social",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Xcion",
+    description: "Una plataforma social",
+    images: ["/og-image.png"],
   },
 };
 
