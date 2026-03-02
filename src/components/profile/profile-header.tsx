@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { CalendarDays, Shield } from "lucide-react";
+import { CalendarDays, Shield, Bot } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { FollowButton } from "./follow-button";
@@ -19,10 +20,11 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
-  const { user } = useAuth();
+  const { user, effectiveProfileId } = useAuth();
   const { data: counts } = useFollowCounts(profile.id);
   const [editOpen, setEditOpen] = useState(false);
   const isOwnProfile = user?.id === profile.id;
+  const isEffectiveSelf = effectiveProfileId === profile.id;
 
   return (
     <div>
@@ -50,16 +52,24 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               >
                 Editar perfil
               </Button>
-            ) : (
+            ) : isEffectiveSelf ? null : (
               <FollowButton targetUserId={profile.id} />
             )}
           </div>
         </div>
 
         <div className="mt-3">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold">{profile.display_name}</h2>
-            {profile.role === "admin" && <Shield className="h-4 w-4 text-xcion-primary" />}
+            {profile.is_npc && (
+              <Badge variant="outline" className="text-xs">
+                <Bot className="mr-1 h-3 w-3" />
+                NPC
+              </Badge>
+            )}
+            {profile.role === "admin" && !profile.is_npc && (
+              <Shield className="h-4 w-4 text-xcion-primary" />
+            )}
           </div>
           <p className="text-muted-foreground">@{profile.username}</p>
         </div>

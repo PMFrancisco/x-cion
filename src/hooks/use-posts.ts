@@ -142,11 +142,12 @@ async function fetchPosts({
 }
 
 export function usePosts(options: Omit<FetchPostsOptions, "currentUserId"> = {}) {
-  const { user, isLoading: authLoading } = useAuth();
+  const { effectiveProfileId, isLoading: authLoading } = useAuth();
 
   return useInfiniteQuery({
-    queryKey: ["posts", options, user?.id],
-    queryFn: ({ pageParam }) => fetchPosts({ ...options, pageParam, currentUserId: user?.id }),
+    queryKey: ["posts", options, effectiveProfileId],
+    queryFn: ({ pageParam }) =>
+      fetchPosts({ ...options, pageParam, currentUserId: effectiveProfileId }),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined as string | undefined,
     enabled: !authLoading,
@@ -156,7 +157,7 @@ export function usePosts(options: Omit<FetchPostsOptions, "currentUserId"> = {})
 
 export function useCreatePost() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { effectiveProfileId } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -168,13 +169,13 @@ export function useCreatePost() {
       mediaUrls?: string[];
       parentId?: string;
     }) => {
-      if (!user) throw new Error("Not authenticated");
+      if (!effectiveProfileId) throw new Error("Not authenticated");
       const supabase = createClient();
 
       const { data, error } = await supabase
         .from("posts")
         .insert({
-          author_id: user.id,
+          author_id: effectiveProfileId,
           content,
           media_urls: mediaUrls,
           parent_id: parentId || null,

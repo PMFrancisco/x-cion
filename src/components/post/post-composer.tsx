@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ImagePlus, X, Loader2 } from "lucide-react";
+import { ImagePlus, X, Loader2, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,7 @@ export function PostComposer({
   placeholder = "¿Qué está pasando?",
   compact = false,
 }: PostComposerProps) {
-  const { profile } = useAuth();
+  const { profile, effectiveProfile, isPossessing } = useAuth();
   const createPost = useCreatePost();
   const [content, setContent] = useState("");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -118,10 +118,17 @@ export function PostComposer({
 
   return (
     <div className="flex gap-3 p-4">
-      <Avatar className="h-10 w-10 shrink-0">
-        <AvatarImage src={profile.avatar_url ?? undefined} />
-        <AvatarFallback>{getInitials(profile.display_name)}</AvatarFallback>
-      </Avatar>
+      <div className="relative shrink-0">
+        <Avatar className="h-10 w-10">
+          <AvatarImage src={effectiveProfile?.avatar_url ?? undefined} />
+          <AvatarFallback>{getInitials(effectiveProfile?.display_name ?? "")}</AvatarFallback>
+        </Avatar>
+        {isPossessing && (
+          <div className="absolute -bottom-0.5 -right-0.5 rounded-full bg-background p-0.5">
+            <Bot className="h-3 w-3 text-xcion-primary" />
+          </div>
+        )}
+      </div>
 
       <div className="flex-1">
         <Textarea

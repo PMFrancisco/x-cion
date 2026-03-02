@@ -11,7 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, Loader2, MoreVertical, Shield, User } from "lucide-react";
+import { ArrowLeft, Bot, Loader2, MoreVertical, Shield, User } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getInitials } from "@/lib/utils";
 import { toast } from "sonner";
@@ -28,6 +29,7 @@ export default function AdminPage() {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
+        .eq("is_npc", false)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return data as Profile[];
@@ -65,6 +67,20 @@ export default function AdminPage() {
           <p className="text-sm text-muted-foreground">{users?.length ?? 0} usuarios</p>
         </div>
       </div>
+
+      <Link
+        href="/admin/npcs"
+        className="flex items-center gap-3 px-4 py-3 border-b hover:bg-accent/50 transition-colors"
+      >
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-xcion-primary/10">
+          <Bot className="h-5 w-5 text-xcion-primary" />
+        </div>
+        <div className="flex-1">
+          <span className="font-semibold">Gestionar NPCs</span>
+          <p className="text-sm text-muted-foreground">Crear, editar y poseer personajes</p>
+        </div>
+        <ArrowLeft className="h-4 w-4 rotate-180 text-muted-foreground" />
+      </Link>
 
       {isLoading ? (
         <div className="flex justify-center py-8">

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { MoreHorizontal, Trash2, Pencil, Shield } from "lucide-react";
+import { MoreHorizontal, Trash2, Pencil, Shield, Bot } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,7 +95,8 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
               >
                 {post.author.display_name}
               </Link>
-              {post.author.role === "admin" && (
+              {post.author.is_npc && <Bot className="h-3.5 w-3.5 text-muted-foreground" />}
+              {post.author.role === "admin" && !post.author.is_npc && (
                 <Shield className="h-3.5 w-3.5 text-xcion-primary" />
               )}
               <Link

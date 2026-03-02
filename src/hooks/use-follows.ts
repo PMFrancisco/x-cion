@@ -5,18 +5,18 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 export function useIsFollowing(targetUserId: string) {
-  const { user, isLoading: authLoading } = useAuth();
+  const { effectiveProfileId, isLoading: authLoading } = useAuth();
 
   return useQuery({
-    queryKey: ["following", targetUserId, user?.id],
+    queryKey: ["following", targetUserId, effectiveProfileId],
     queryFn: async () => {
-      if (!user) return false;
+      if (!effectiveProfileId) return false;
       const supabase = createClient();
 
       const { data } = await supabase
         .from("follows")
         .select("follower_id")
-        .eq("follower_id", user.id)
+        .eq("follower_id", effectiveProfileId)
         .eq("following_id", targetUserId)
         .single();
 
@@ -28,7 +28,7 @@ export function useIsFollowing(targetUserId: string) {
 
 export function useFollow() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { effectiveProfileId } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -38,19 +38,19 @@ export function useFollow() {
       targetUserId: string;
       isFollowing: boolean;
     }) => {
-      if (!user) throw new Error("Not authenticated");
+      if (!effectiveProfileId) throw new Error("Not authenticated");
       const supabase = createClient();
 
       if (isFollowing) {
         const { error } = await supabase
           .from("follows")
           .delete()
-          .eq("follower_id", user.id)
+          .eq("follower_id", effectiveProfileId)
           .eq("following_id", targetUserId);
         if (error) throw error;
       } else {
         const { error } = await supabase.from("follows").insert({
-          follower_id: user.id,
+          follower_id: effectiveProfileId,
           following_id: targetUserId,
         });
         if (error) throw error;

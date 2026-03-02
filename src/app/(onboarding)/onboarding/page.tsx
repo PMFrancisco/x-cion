@@ -91,7 +91,7 @@ export default function OnboardingPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Configura tu perfil</h1>
+        <h1 className="text-2xl font-bold">Oe, cambia esto</h1>
         <p className="text-muted-foreground">Elige tu handle y nombre para empezar</p>
       </div>
 

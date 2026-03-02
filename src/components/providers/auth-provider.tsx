@@ -15,6 +15,12 @@ interface AuthContextType {
   authError: string | null;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  actingAs: Profile | null;
+  effectiveProfileId: string | undefined;
+  effectiveProfile: Profile | null;
+  isPossessing: boolean;
+  possess: (npc: Profile) => void;
+  unpossess: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -26,6 +32,12 @@ export const AuthContext = createContext<AuthContextType>({
   authError: null,
   signOut: async () => {},
   refreshProfile: async () => {},
+  actingAs: null,
+  effectiveProfileId: undefined,
+  effectiveProfile: null,
+  isPossessing: false,
+  possess: () => {},
+  unpossess: () => {},
 });
 
 const PROFILE_RETRY_DELAY = 500;
@@ -36,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [actingAs, setActingAs] = useState<Profile | null>(null);
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
@@ -46,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
+        setActingAs(null);
         setIsLoading(false);
         router.push("/login");
         return;
@@ -119,11 +133,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, supabase]);
 
   const signOut = useCallback(async () => {
+    setActingAs(null);
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
     router.push("/login");
   }, [supabase, router]);
+
+  const possess = useCallback(
+    (npc: Profile) => {
+      if (profile?.role !== "admin" || !npc.is_npc) return;
+      setActingAs(npc);
+    },
+    [profile]
+  );
+
+  const unpossess = useCallback(() => {
+    setActingAs(null);
+  }, []);
+
+  const isPossessing = actingAs !== null;
+  const effectiveProfileId = actingAs?.id ?? profile?.id;
+  const effectiveProfile = actingAs ?? profile;
 
   const needsOnboarding = !!profile && !profile.onboarding_completed;
   const pathname = usePathname();
@@ -150,6 +181,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authError,
         signOut,
         refreshProfile,
+        actingAs,
+        effectiveProfileId,
+        effectiveProfile,
+        isPossessing,
+        possess,
+        unpossess,
       }}
     >
       {children}
