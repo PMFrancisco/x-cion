@@ -9,7 +9,6 @@ A Twitter/X clone built with Next.js, Supabase, and Tailwind CSS.
 - **Backend**: Supabase (Postgres, Auth, Realtime, Storage)
 - **Auth**: Google OAuth + Email/Password
 - **State**: TanStack React Query + Zustand
-- **PWA**: @ducanh2912/next-pwa
 
 ## Features
 
@@ -20,7 +19,7 @@ A Twitter/X clone built with Next.js, Supabase, and Tailwind CSS.
 - User profiles with avatar/banner
 - Admin role: edit/delete any post, manage user roles
 - Dark/light theme (dark by default)
-- PWA: installable, offline shell, caching
+- PWA: installable via web manifest
 - Responsive: desktop 3-column layout, mobile bottom nav
 
 ## Setup
@@ -101,7 +100,5 @@ src/
 ## Build for production
 
 ```bash
-npx next build --webpack
+npm run build
 ```
-
-The `--webpack` flag is required for the PWA service worker generation.
