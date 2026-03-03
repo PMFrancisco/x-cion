@@ -1,7 +1,9 @@
 {
   "name": "Xcion",
   "short_name": "Xcion",
-  "description": "Una plataforma social",
+  "description": "Donde todo sucede",
+  "id": "/",
+  "scope": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
