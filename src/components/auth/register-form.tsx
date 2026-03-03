@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GoogleButton } from "./google-button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 
 export function RegisterForm() {
   const [username, setUsername] = useState("");
@@ -17,6 +17,7 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -67,8 +68,36 @@ export function RegisterForm() {
       return;
     }
 
-    router.push("/");
-    router.refresh();
+    setEmailSent(true);
+    setLoading(false);
+  }
+
+  if (emailSent) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="flex justify-center">
+          <div className="rounded-full bg-primary/10 p-4">
+            <Mail className="h-8 w-8 text-primary" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">Revisa tu correo</h1>
+          <p className="text-muted-foreground">
+            Te enviamos un enlace de confirmación a{" "}
+            <span className="font-medium text-foreground">{email}</span>.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            No olvides revisar tu carpeta de spam si no lo encuentras.
+          </p>
+        </div>
+        <p className="text-center text-sm text-muted-foreground">
+          ¿Ya confirmaste?{" "}
+          <Link href="/login" className="text-primary underline-offset-4 hover:underline">
+            Inicia sesión
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   return (
