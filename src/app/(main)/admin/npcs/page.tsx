@@ -26,6 +26,7 @@ import {
   MoreVertical,
   Pencil,
   Plus,
+  Search,
   Trash2,
   UserCheck,
   Bot,
@@ -49,9 +50,16 @@ export default function NpcsPage() {
   const updateNpc = useUpdateNpc();
   const deleteNpc = useDeleteNpc();
 
+  const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [editNpc, setEditNpc] = useState<Profile | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Profile | null>(null);
+
+  const filteredNpcs = npcs?.filter((npc) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return npc.display_name?.toLowerCase().includes(q) || npc.username?.toLowerCase().includes(q);
+  });
 
   return (
     <div>
@@ -67,6 +75,15 @@ export default function NpcsPage() {
         <div className="flex-1">
           <h1 className="text-xl font-bold">NPCs</h1>
           <p className="text-sm text-muted-foreground">{npcs?.length ?? 0} personajes</p>
+        </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar NPC..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 h-9 w-48 rounded-full"
+          />
         </div>
         <Button
           onClick={() => setCreateOpen(true)}
@@ -90,9 +107,17 @@ export default function NpcsPage() {
             Crea tu primer personaje para empezar a publicar como NPC
           </p>
         </div>
+      ) : filteredNpcs?.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Search className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-lg font-semibold">Sin resultados</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            No se encontraron NPCs para &ldquo;{search}&rdquo;
+          </p>
+        </div>
       ) : (
         <div className="divide-y">
-          {npcs?.map((npc) => (
+          {filteredNpcs?.map((npc) => (
             <div key={npc.id} className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
