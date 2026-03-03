@@ -63,36 +63,40 @@ export default function NpcsPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center gap-6 backdrop-blur-md bg-background/80 border-b px-4 py-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-full"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold">NPCs</h1>
-          <p className="text-sm text-muted-foreground">{npcs?.length ?? 0} personajes</p>
+      <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b">
+        <div className="flex items-center gap-6 px-4 py-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-full"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold">NPCs</h1>
+            <p className="text-sm text-muted-foreground">{npcs?.length ?? 0} personajes</p>
+          </div>
+          <Button
+            onClick={() => setCreateOpen(true)}
+            className="rounded-full bg-xcion-primary text-white hover:bg-xcion-primary-hover"
+            size="sm"
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            Crear NPC
+          </Button>
         </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar NPC..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-9 w-48 rounded-full"
-          />
+        <div className="px-4 pb-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Buscar NPC..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="rounded-full bg-secondary pl-10"
+            />
+          </div>
         </div>
-        <Button
-          onClick={() => setCreateOpen(true)}
-          className="rounded-full bg-xcion-primary text-white hover:bg-xcion-primary-hover"
-          size="sm"
-        >
-          <Plus className="mr-1 h-4 w-4" />
-          Crear NPC
-        </Button>
       </div>
 
       {isLoading ? (
