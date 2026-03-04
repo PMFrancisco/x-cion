@@ -12,6 +12,7 @@ interface PostFeedProps {
   isLoading: boolean;
   fetchNextPage: () => void;
   emptyMessage?: string;
+  threadConnectors?: boolean;
 }
 
 export function PostFeed({
@@ -21,6 +22,7 @@ export function PostFeed({
   isLoading,
   fetchNextPage,
   emptyMessage = "Aún no hay publicaciones",
+  threadConnectors = false,
 }: PostFeedProps) {
   const observerRef = useRef<HTMLDivElement>(null);
 
@@ -67,8 +69,12 @@ export function PostFeed({
 
   return (
     <div>
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+      {posts.map((post, i) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          showConnector={threadConnectors && i < posts.length - 1}
+        />
       ))}
 
       <div ref={observerRef} className="h-1" />

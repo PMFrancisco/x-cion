@@ -34,11 +34,11 @@ async function fetchPosts({
     `
     )
     .is("repost_of", null)
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: !!parentId })
     .limit(PAGE_SIZE);
 
   if (pageParam) {
-    query = query.lt("created_at", pageParam);
+    query = parentId ? query.gt("created_at", pageParam) : query.lt("created_at", pageParam);
   }
 
   if (parentId) {

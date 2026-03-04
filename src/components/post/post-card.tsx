@@ -12,7 +12,6 @@ import {
   Bot,
   ChevronLeft,
   ChevronRight,
-  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -36,9 +35,15 @@ interface PostCardProps {
   post: PostWithCounts;
   variant?: "feed" | "detail";
   showActions?: boolean;
+  showConnector?: boolean;
 }
 
-export function PostCard({ post, variant = "feed", showActions = true }: PostCardProps) {
+export function PostCard({
+  post,
+  variant = "feed",
+  showActions = true,
+  showConnector = false,
+}: PostCardProps) {
   const router = useRouter();
   const { user, isAdmin } = useAuth();
   const deletePost = useDeletePost();
@@ -109,16 +114,15 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
         )}
       >
         <div className="flex gap-3">
-          <Link
-            href={`/${post.author.username}`}
-            onClick={(e) => e.stopPropagation()}
-            className="shrink-0"
-          >
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={post.author.avatar_url ?? undefined} />
-              <AvatarFallback>{getInitials(post.author.display_name)}</AvatarFallback>
-            </Avatar>
-          </Link>
+          <div className="flex flex-col items-center shrink-0">
+            <Link href={`/${post.author.username}`} onClick={(e) => e.stopPropagation()}>
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={post.author.avatar_url ?? undefined} />
+                <AvatarFallback>{getInitials(post.author.display_name)}</AvatarFallback>
+              </Avatar>
+            </Link>
+            {showConnector && <div className="mt-1 w-0.5 flex-1 rounded-full bg-border" />}
+          </div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1">
