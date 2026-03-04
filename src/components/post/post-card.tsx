@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { MoreHorizontal, Trash2, Pencil, Shield, Bot } from "lucide-react";
+import {
+  MoreHorizontal,
+  Trash2,
+  Pencil,
+  Shield,
+  Bot,
+  ChevronLeft,
+  ChevronRight,
+  X,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +45,31 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
   const updatePost = useUpdatePost();
   const [editOpen, setEditOpen] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const prevImage = useCallback(() => {
+    setLightboxIndex((i) => (i - 1 + post.media_urls.length) % post.media_urls.length);
+  }, [post.media_urls.length]);
+
+  const nextImage = useCallback(() => {
+    setLightboxIndex((i) => (i + 1) % post.media_urls.length);
+  }, [post.media_urls.length]);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prevImage();
+      else if (e.key === "ArrowRight") nextImage();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, prevImage, nextImage]);
 
   const isAuthor = user?.id === post.author_id;
   const canModify = isAuthor || isAdmin;
@@ -163,13 +197,19 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
                 )}
               >
                 {post.media_urls.map((url, i) => (
-                  <div key={i} className="relative aspect-video overflow-hidden">
+                  <div
+                    key={i}
+                    className="relative aspect-video overflow-hidden cursor-zoom-in"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openLightbox(i);
+                    }}
+                  >
                     <Image
                       src={url}
                       alt=""
                       fill
-                      className="object-cover"
-                      onClick={(e) => e.stopPropagation()}
+                      className="object-cover transition-transform duration-200 hover:scale-105"
                     />
                   </div>
                 ))}
@@ -180,6 +220,49 @@ export function PostCard({ post, variant = "feed", showActions = true }: PostCar
           </div>
         </div>
       </article>
+
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-5xl border-none bg-black/95 p-0 shadow-none [&>button]:text-white">
+          <DialogTitle className="sr-only">Ver imagen</DialogTitle>
+          <div className="relative flex h-[90vh] items-center justify-center">
+            <Image
+              src={post.media_urls[lightboxIndex]}
+              alt=""
+              fill
+              className="object-contain"
+              sizes="(max-width: 1024px) 100vw, 80vw"
+            />
+            {post.media_urls.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/80"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/80"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+                  {post.media_urls.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setLightboxIndex(i)}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all",
+                        i === lightboxIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                      )}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
