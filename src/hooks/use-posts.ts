@@ -96,15 +96,19 @@ async function fetchPosts({
 
   const replyCounts: Record<string, number> = {};
   const repostCounts: Record<string, number> = {};
+  const userReplied: Set<string> = new Set();
 
   if (postIds.length > 0) {
     const { data: replies } = await supabase
       .from("posts")
-      .select("parent_id")
+      .select("parent_id, author_id")
       .in("parent_id", postIds);
 
-    (replies ?? []).forEach((r: { parent_id: string | null }) => {
-      if (r.parent_id) replyCounts[r.parent_id] = (replyCounts[r.parent_id] ?? 0) + 1;
+    (replies ?? []).forEach((r: { parent_id: string | null; author_id: string }) => {
+      if (r.parent_id) {
+        replyCounts[r.parent_id] = (replyCounts[r.parent_id] ?? 0) + 1;
+        if (r.author_id === currentUserId) userReplied.add(r.parent_id);
+      }
     });
 
     const { data: reposts } = await supabase
@@ -133,6 +137,7 @@ async function fetchPosts({
     is_liked: post.likes?.some((l) => l.user_id === currentUserId) ?? false,
     is_bookmarked: post.bookmarks?.some((b) => b.user_id === currentUserId) ?? false,
     is_reposted: false,
+    is_replied: userReplied.has(post.id),
   }));
 
   return {

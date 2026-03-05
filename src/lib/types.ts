@@ -37,6 +37,7 @@ export interface PostWithCounts extends PostWithAuthor {
   is_liked: boolean;
   is_bookmarked: boolean;
   is_reposted: boolean;
+  is_replied: boolean;
 }
 
 export interface Like {

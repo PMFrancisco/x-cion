@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, MessageCircle, Repeat2, Bookmark, Share } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLike } from "@/hooks/use-likes";
 import { useBookmark } from "@/hooks/use-bookmarks";
@@ -42,21 +42,16 @@ export function PostActions({ post }: PostActionsProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="group gap-1 px-2 text-muted-foreground hover:text-xcion-primary"
+        className={cn(
+          "group gap-1 px-2 hover:text-sky-500",
+          post.is_replied ? "text-sky-500" : "text-muted-foreground"
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        <MessageCircle className="h-4 w-4 group-hover:text-xcion-primary" />
+        <MessageCircle
+          className={cn("h-4 w-4 group-hover:text-sky-500", post.is_replied && "fill-current")}
+        />
         {post.reply_count > 0 && <span className="text-xs">{post.reply_count}</span>}
-      </Button>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        className="group gap-1 px-2 text-muted-foreground hover:text-green-500"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Repeat2 className="h-4 w-4 group-hover:text-green-500" />
-        {post.repost_count > 0 && <span className="text-xs">{post.repost_count}</span>}
       </Button>
 
       <Button
