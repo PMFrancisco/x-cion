@@ -16,6 +16,7 @@ A mock social network built for [Inner Circle Rol](https://www.instagram.com/inn
 
 - Post creation (280 char limit) with up to 4 image uploads
 - Infinite scroll feeds (Home, Explore)
+- Threaded replies with vertical connector lines and chronological ordering
 - Likes, replies, reposts, bookmarks
 - Follow/unfollow users
 - User profiles with avatar/banner
@@ -123,7 +124,7 @@ src/
 ├── components/
 │   ├── auth/               # Login/register forms
 │   ├── layout/             # Sidebar, mobile nav, right panel
-│   ├── post/               # PostCard, PostComposer, PostFeed
+│   ├── post/               # PostCard, PostComposer, PostFeed, PostThread
 │   ├── profile/            # ProfileHeader, ProfileTabs, FollowButton
 │   ├── providers/          # Auth, Query, Theme, SW providers
 │   ├── shared/             # EmptyState, LoadingSkeleton
