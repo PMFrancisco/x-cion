@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Heart, MessageCircle, Bookmark, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLike } from "@/hooks/use-likes";
@@ -13,6 +14,7 @@ interface PostActionsProps {
 }
 
 export function PostActions({ post }: PostActionsProps) {
+  const router = useRouter();
   const likeMutation = useLike();
   const bookmarkMutation = useBookmark();
 
@@ -46,7 +48,10 @@ export function PostActions({ post }: PostActionsProps) {
           "group gap-1 px-2 hover:text-sky-500",
           post.is_replied ? "text-sky-500" : "text-muted-foreground"
         )}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          router.push(`/${post.author.username}/status/${post.id}?reply=true`);
+        }}
       >
         <MessageCircle
           className={cn("h-4 w-4 group-hover:text-sky-500", post.is_replied && "fill-current")}

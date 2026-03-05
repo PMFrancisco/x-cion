@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowDown } from "lucide-react";
 import { PostCard } from "./post-card";
 import { PostComposer } from "./post-composer";
@@ -16,6 +17,8 @@ interface PostThreadProps {
 }
 
 export function PostThread({ post }: PostThreadProps) {
+  const searchParams = useSearchParams();
+  const shouldFocusReply = searchParams.get("reply") === "true";
   const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
     parentId: post.id,
   });
@@ -46,7 +49,12 @@ export function PostThread({ post }: PostThreadProps) {
   return (
     <div>
       <PostCard post={post} variant="detail" showConnector />
-      <PostComposer parentId={post.id} placeholder="Publica tu respuesta" compact />
+      <PostComposer
+        parentId={post.id}
+        placeholder="Publica tu respuesta"
+        compact
+        autoFocus={shouldFocusReply}
+      />
       <Separator />
       <PostFeed
         pages={data?.pages ?? []}

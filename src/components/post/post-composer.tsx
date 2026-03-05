@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ImagePlus, X, Loader2, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ interface PostComposerProps {
   onSuccess?: () => void;
   placeholder?: string;
   compact?: boolean;
+  autoFocus?: boolean;
 }
 
 export function PostComposer({
@@ -25,6 +26,7 @@ export function PostComposer({
   onSuccess,
   placeholder = "¿Qué está pasando?",
   compact = false,
+  autoFocus = false,
 }: PostComposerProps) {
   const { profile, effectiveProfile, isPossessing } = useAuth();
   const createPost = useCreatePost();
@@ -33,6 +35,13 @@ export function PostComposer({
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      setTimeout(() => textareaRef.current?.focus(), 100);
+    }
+  }, [autoFocus]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -132,6 +141,7 @@ export function PostComposer({
 
       <div className="flex-1">
         <Textarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder={placeholder}
