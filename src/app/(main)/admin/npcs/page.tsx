@@ -40,7 +40,6 @@ import { useNpcProfiles, useCreateNpc, useUpdateNpc, useDeleteNpc } from "@/hook
 import { createClient } from "@/lib/supabase/client";
 import imageCompression from "browser-image-compression";
 import type { Profile } from "@/lib/types";
-import Image from "next/image";
 
 export default function NpcsPage() {
   const router = useRouter();
