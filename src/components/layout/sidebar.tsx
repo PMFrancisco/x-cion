@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   Search,
+  Bell,
   Bookmark,
   User,
   Settings,
@@ -18,6 +19,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useUnreadCount } from "@/hooks/use-notifications";
 import { cn, getInitials } from "@/lib/utils";
 import { useState } from "react";
 import { ComposeDialog } from "./compose-dialog";
@@ -25,6 +27,7 @@ import { ComposeDialog } from "./compose-dialog";
 const navItems = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/explore", label: "Explorar", icon: Search },
+  { href: "/notifications", label: "Notificaciones", icon: Bell },
   { href: "/bookmarks", label: "Guardados", icon: Bookmark },
 ];
 
@@ -32,6 +35,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { profile, isAdmin, signOut, isPossessing, actingAs, unpossess } = useAuth();
   const [composeOpen, setComposeOpen] = useState(false);
+  const { data: unreadCount } = useUnreadCount();
 
   return (
     <>
@@ -47,6 +51,7 @@ export function Sidebar() {
 
           {navItems.map((item) => {
             const isActive = pathname === item.href;
+            const showBadge = item.href === "/notifications" && !!unreadCount && unreadCount > 0;
             return (
               <Link
                 key={item.href}
@@ -56,7 +61,14 @@ export function Sidebar() {
                   isActive && "font-bold"
                 )}
               >
-                <item.icon className="h-6 w-6" />
+                <div className="relative">
+                  <item.icon className="h-6 w-6" />
+                  {showBadge && (
+                    <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-xcion-primary px-1 text-[10px] font-bold text-white">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </div>
                 <span className="hidden xl:block">{item.label}</span>
               </Link>
             );

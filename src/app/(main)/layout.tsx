@@ -5,9 +5,11 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { RightPanel } from "@/components/layout/right-panel";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { useAuth } from "@/hooks/use-auth";
+import { useRealtimeNotifications } from "@/hooks/use-notifications";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { isLoading } = useAuth();
+  useRealtimeNotifications();
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[1280px]">
