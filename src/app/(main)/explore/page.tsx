@@ -11,6 +11,7 @@ import { PostFeed } from "@/components/post/post-feed";
 import { FollowButton } from "@/components/profile/follow-button";
 import { useSearchProfiles, useSearchPosts } from "@/hooks/use-search";
 import { usePosts } from "@/hooks/use-posts";
+import { useTrendingHashtags } from "@/hooks/use-hashtags";
 import { getInitials, cn } from "@/lib/utils";
 
 type Tab = "posts" | "people";
@@ -90,14 +91,17 @@ export default function SearchPage() {
       </div>
 
       {!isSearching && (
-        <PostFeed
-          pages={exploreData?.pages ?? []}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          isLoading={exploreLoading}
-          fetchNextPage={fetchNextPage}
-          emptyMessage="Aún no hay publicaciones. ¡Sé el primero en publicar!"
-        />
+        <>
+          <ExploreTrending />
+          <PostFeed
+            pages={exploreData?.pages ?? []}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            isLoading={exploreLoading}
+            fetchNextPage={fetchNextPage}
+            emptyMessage="Aún no hay publicaciones. ¡Sé el primero en publicar!"
+          />
+        </>
       )}
 
       {isSearching && searchLoading && (
@@ -160,6 +164,29 @@ export default function SearchPage() {
           )}
         </>
       )}
+    </div>
+  );
+}
+
+function ExploreTrending() {
+  const { data: hashtags, isLoading } = useTrendingHashtags(168);
+
+  if (isLoading || !hashtags || hashtags.length === 0) return null;
+
+  return (
+    <div className="border-b px-4 py-4 lg:hidden">
+      <h2 className="mb-3 text-lg font-bold">Tendencias</h2>
+      <div className="flex flex-wrap gap-2">
+        {hashtags.map((ht) => (
+          <Link
+            key={ht.name}
+            href={`/hashtag/${ht.name}`}
+            className="rounded-full bg-secondary px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+          >
+            #{ht.name}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

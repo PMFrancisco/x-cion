@@ -7,6 +7,7 @@ import { Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSearchProfiles } from "@/hooks/use-search";
+import { useTrendingHashtags } from "@/hooks/use-hashtags";
 import { getInitials, cn } from "@/lib/utils";
 
 export function RightPanel() {
@@ -113,15 +114,49 @@ export function RightPanel() {
         )}
       </div>
 
-      <div className="rounded-2xl bg-secondary p-4">
-        <h2 className="mb-4 text-xl font-bold">Qué está pasando</h2>
-        <p className="text-sm text-muted-foreground">Los temas de tendencia aparecerán aquí.</p>
-      </div>
+      <TrendingSection />
 
       <div className="rounded-2xl bg-secondary p-4">
         <h2 className="mb-4 text-xl font-bold">A quién seguir</h2>
         <p className="text-sm text-muted-foreground">Las sugerencias aparecerán aquí.</p>
       </div>
     </aside>
+  );
+}
+
+function TrendingSection() {
+  const { data: hashtags, isLoading } = useTrendingHashtags(168);
+
+  return (
+    <div className="rounded-2xl bg-secondary p-4">
+      <h2 className="mb-4 text-xl font-bold">Tendencias</h2>
+
+      {isLoading && (
+        <div className="flex justify-center py-4">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
+      {!isLoading && (!hashtags || hashtags.length === 0) && (
+        <p className="text-sm text-muted-foreground">Los temas de tendencia aparecerán aquí.</p>
+      )}
+
+      {!isLoading && hashtags && hashtags.length > 0 && (
+        <div className="-mx-4">
+          {hashtags.map((ht) => (
+            <Link
+              key={ht.name}
+              href={`/hashtag/${ht.name}`}
+              className="block px-4 py-2.5 transition-colors hover:bg-accent/50"
+            >
+              <p className="truncate text-sm font-bold">#{ht.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {ht.post_count} {ht.post_count === 1 ? "publicación" : "publicaciones"}
+              </p>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

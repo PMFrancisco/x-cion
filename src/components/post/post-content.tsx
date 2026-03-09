@@ -23,9 +23,14 @@ export function PostContent({ text }: { text: string }) {
             );
           case "hashtag":
             return (
-              <span key={i} className="text-xcion-primary">
+              <Link
+                key={i}
+                href={`/hashtag/${segment.value.slice(1).toLowerCase()}`}
+                className="text-xcion-primary hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {segment.value}
-              </span>
+              </Link>
             );
           case "url":
             return (
