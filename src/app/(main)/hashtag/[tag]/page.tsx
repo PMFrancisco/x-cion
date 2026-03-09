@@ -1,30 +1,19 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { useParams } from "next/navigation";
 import { PostFeed } from "@/components/post/post-feed";
 import { useHashtagPosts } from "@/hooks/use-hashtags";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default function HashtagPage() {
   const params = useParams<{ tag: string }>();
-  const router = useRouter();
   const tag = decodeURIComponent(params.tag);
 
   const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = useHashtagPosts(tag);
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-4 py-3 backdrop-blur-md">
-        <button
-          onClick={() => router.back()}
-          className="rounded-full p-1.5 transition-colors hover:bg-accent"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <div>
-          <h1 className="text-xl font-bold">#{tag}</h1>
-        </div>
-      </div>
+      <PageHeader title={`#${tag}`} backButton />
 
       <PostFeed
         pages={data?.pages ?? []}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { PageHeader } from "@/components/layout/page-header";
 import { useAuth } from "@/hooks/use-auth";
 import { createClient } from "@/lib/supabase/client";
 import { validateUsername } from "@/lib/utils";
@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
 export default function SettingsPage() {
-  const router = useRouter();
   const { profile, refreshProfile, signOut } = useAuth();
   const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
@@ -84,17 +83,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center gap-6 backdrop-blur-md bg-background/80 border-b px-4 py-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-full"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-bold">Configuración</h1>
-      </div>
+      <PageHeader title="Configuración" backButton />
 
       <div className="p-4 space-y-6">
         <div>

@@ -1,17 +1,16 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { PostThread } from "@/components/post/post-thread";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
 import type { Post, Profile, PostWithCounts } from "@/lib/types";
 
 export default function PostPage() {
   const params = useParams();
-  const router = useRouter();
   const postId = params.postId as string;
   const { user, isLoading: authLoading } = useAuth();
 
@@ -83,17 +82,7 @@ export default function PostPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center gap-6 backdrop-blur-md bg-background/80 border-b px-4 py-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-full"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-bold">Post</h1>
-      </div>
+      <PageHeader title="Post" backButton />
 
       <PostThread post={post} />
     </div>

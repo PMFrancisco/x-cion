@@ -4,6 +4,8 @@ import { Loader2 } from "lucide-react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { RightPanel } from "@/components/layout/right-panel";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { MobileDrawer } from "@/components/layout/mobile-drawer";
+import { MobileDrawerProvider } from "@/contexts/mobile-drawer-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useRealtimeNotifications } from "@/hooks/use-notifications";
 
@@ -12,19 +14,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   useRealtimeNotifications();
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1280px]">
-      <Sidebar />
-      <main className="min-h-screen min-w-0 flex-1 border-r pb-16 md:pb-0">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-xcion-primary" />
-          </div>
-        ) : (
-          children
-        )}
-      </main>
-      <RightPanel />
-      <MobileNav />
-    </div>
+    <MobileDrawerProvider>
+      <div className="mx-auto flex min-h-screen max-w-[1280px]">
+        <Sidebar />
+        <main className="min-h-screen min-w-0 flex-1 border-r pb-16 md:pb-0">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-xcion-primary" />
+            </div>
+          ) : (
+            children
+          )}
+        </main>
+        <RightPanel />
+        <MobileNav />
+        <MobileDrawer />
+      </div>
+    </MobileDrawerProvider>
   );
 }

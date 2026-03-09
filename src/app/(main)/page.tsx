@@ -5,6 +5,7 @@ import { PostComposer } from "@/components/post/post-composer";
 import { PostFeed } from "@/components/post/post-feed";
 import { usePosts } from "@/hooks/use-posts";
 import { Separator } from "@/components/ui/separator";
+import { PageHeader } from "@/components/layout/page-header";
 import { cn } from "@/lib/utils";
 
 export default function HomePage() {
@@ -16,8 +17,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b">
-        <h1 className="px-4 py-3 text-xl font-bold">Inicio</h1>
+      <PageHeader title="Inicio">
         <div className="flex">
           <button
             onClick={() => setFeedType("explore")}
@@ -42,7 +42,7 @@ export default function HomePage() {
             Siguiendo
           </button>
         </div>
-      </div>
+      </PageHeader>
 
       <PostComposer />
       <Separator />

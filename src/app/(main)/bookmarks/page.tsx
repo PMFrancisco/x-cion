@@ -2,6 +2,7 @@
 
 import { PostFeed } from "@/components/post/post-feed";
 import { usePosts } from "@/hooks/use-posts";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default function BookmarksPage() {
   const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
@@ -10,9 +11,7 @@ export default function BookmarksPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b">
-        <h1 className="px-4 py-3 text-xl font-bold">Guardados</h1>
-      </div>
+      <PageHeader title="Guardados" />
 
       <PostFeed
         pages={data?.pages ?? []}

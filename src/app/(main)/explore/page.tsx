@@ -12,6 +12,7 @@ import { FollowButton } from "@/components/profile/follow-button";
 import { useSearchProfiles, useSearchPosts } from "@/hooks/use-search";
 import { usePosts } from "@/hooks/use-posts";
 import { useTrendingHashtags } from "@/hooks/use-hashtags";
+import { PageHeader } from "@/components/layout/page-header";
 import { getInitials, cn } from "@/lib/utils";
 
 type Tab = "posts" | "people";
@@ -47,9 +48,7 @@ export default function SearchPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b">
-        <h1 className="px-4 py-3 text-xl font-bold">Explorar</h1>
-
+      <PageHeader title="Explorar">
         <div className="px-4 pb-3">
           <form onSubmit={handleSubmit} className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -88,7 +87,7 @@ export default function SearchPage() {
             </button>
           </div>
         )}
-      </div>
+      </PageHeader>
 
       {!isSearching && (
         <>

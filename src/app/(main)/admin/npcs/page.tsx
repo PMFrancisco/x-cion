@@ -21,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  ArrowLeft,
   Loader2,
   MoreVertical,
   Pencil,
@@ -32,7 +31,7 @@ import {
   Bot,
   ImagePlus,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/layout/page-header";
 import { getInitials, validateUsername } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
@@ -42,7 +41,6 @@ import imageCompression from "browser-image-compression";
 import type { Profile } from "@/lib/types";
 
 export default function NpcsPage() {
-  const router = useRouter();
   const { possess, actingAs } = useAuth();
   const { data: npcs, isLoading } = useNpcProfiles();
   const createNpc = useCreateNpc();
@@ -62,20 +60,11 @@ export default function NpcsPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b">
-        <div className="flex items-center gap-6 px-4 py-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-full"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold">NPCs</h1>
-            <p className="text-sm text-muted-foreground">{npcs?.length ?? 0} personajes</p>
-          </div>
+      <PageHeader
+        title="NPCs"
+        subtitle={`${npcs?.length ?? 0} personajes`}
+        backButton
+        rightContent={
           <Button
             onClick={() => setCreateOpen(true)}
             className="rounded-full bg-xcion-primary text-white hover:bg-xcion-primary-hover"
@@ -84,7 +73,8 @@ export default function NpcsPage() {
             <Plus className="mr-1 h-4 w-4" />
             Crear NPC
           </Button>
-        </div>
+        }
+      >
         <div className="px-4 pb-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -96,7 +86,7 @@ export default function NpcsPage() {
             />
           </div>
         </div>
-      </div>
+      </PageHeader>
 
       {isLoading ? (
         <div className="flex justify-center py-8">

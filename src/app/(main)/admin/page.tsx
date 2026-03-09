@@ -13,13 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, Bot, Loader2, MoreVertical, Shield, User } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/layout/page-header";
 import { getInitials } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Profile, UserRole } from "@/lib/types";
 
 export default function AdminPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const { data: users, isLoading } = useQuery({
@@ -53,20 +52,11 @@ export default function AdminPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center gap-6 backdrop-blur-md bg-background/80 border-b px-4 py-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-full"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-xl font-bold">Panel de administración</h1>
-          <p className="text-sm text-muted-foreground">{users?.length ?? 0} usuarios</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Panel de administración"
+        subtitle={`${users?.length ?? 0} usuarios`}
+        backButton
+      />
 
       <Link
         href="/admin/npcs"

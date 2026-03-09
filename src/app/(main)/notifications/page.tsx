@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Heart, MessageCircle, UserPlus, AtSign, CheckCheck } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/layout/page-header";
 import { useNotifications, useMarkRead } from "@/hooks/use-notifications";
 import { getInitials, cn, formatRelativeTime } from "@/lib/utils";
 import type { Notification, Profile, Post } from "@/lib/types";
@@ -73,21 +74,23 @@ export default function NotificationsPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/80 px-4 py-3 backdrop-blur-md">
-        <h1 className="text-xl font-bold">Notificaciones</h1>
-        {hasUnread && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => markRead.mutate(undefined)}
-            disabled={markRead.isPending}
-            className="text-xs text-muted-foreground"
-          >
-            <CheckCheck className="mr-1 h-4 w-4" />
-            Marcar todo como leído
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Notificaciones"
+        rightContent={
+          hasUnread ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => markRead.mutate(undefined)}
+              disabled={markRead.isPending}
+              className="text-xs text-muted-foreground"
+            >
+              <CheckCheck className="mr-1 h-4 w-4" />
+              Marcar todo como leído
+            </Button>
+          ) : undefined
+        }
+      />
 
       {isLoading && (
         <div className="flex justify-center py-8">
