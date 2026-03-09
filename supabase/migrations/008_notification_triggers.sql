@@ -11,6 +11,16 @@
 -- ============================================
 
 -- =====================
+-- 0. RLS: ADMIN CAN VIEW NPC NOTIFICATIONS
+-- =====================
+
+CREATE POLICY "Admins can view NPC notifications"
+  ON notifications FOR SELECT USING (
+    is_admin()
+    AND EXISTS (SELECT 1 FROM profiles WHERE id = recipient_id AND is_npc = true)
+  );
+
+-- =====================
 -- 1. LIKE NOTIFICATION
 -- =====================
 

@@ -142,3 +142,28 @@ export function useSearchPosts(query: string) {
     staleTime: 30_000,
   });
 }
+
+async function searchMentions(query: string): Promise<Profile[]> {
+  const supabase = createClient();
+  const pattern = `${query}%`;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .or(`username.ilike.${pattern},display_name.ilike.%${query}%`)
+    .limit(5);
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export function useMentionSuggestions(query: string | null) {
+  const debouncedQuery = useDebounce(query?.trim() ?? "", 150);
+
+  return useQuery({
+    queryKey: ["mentions", debouncedQuery],
+    queryFn: () => searchMentions(debouncedQuery),
+    enabled: debouncedQuery.length >= 1,
+    staleTime: 30_000,
+  });
+}

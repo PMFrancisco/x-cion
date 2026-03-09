@@ -1,17 +1,39 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ImagePlus, X, Loader2, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { useCreatePost } from "@/hooks/use-posts";
+import { useMentionSuggestions } from "@/hooks/use-search";
 import { getInitials } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 import Image from "next/image";
+
+function getMentionQuery(text: string, cursorPos: number): string | null {
+  const before = text.slice(0, cursorPos);
+  const match = before.match(/@(\w*)$/);
+  return match ? match[1] : null;
+}
+
+function insertMention(
+  text: string,
+  cursorPos: number,
+  username: string
+): { newText: string; newCursor: number } {
+  const before = text.slice(0, cursorPos);
+  const after = text.slice(cursorPos);
+  const mentionStart = before.lastIndexOf("@");
+  const mention = `@${username} `;
+  return {
+    newText: before.slice(0, mentionStart) + mention + after,
+    newCursor: mentionStart + mention.length,
+  };
+}
 
 interface PostComposerProps {
   parentId?: string;
@@ -34,14 +56,71 @@ export function PostComposer({
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionIndex, setMentionIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const cursorPosRef = useRef(0);
+
+  const { data: mentionResults } = useMentionSuggestions(mentionQuery);
+  const showMentions = mentionQuery !== null && !!mentionResults && mentionResults.length > 0;
 
   useEffect(() => {
     if (autoFocus) {
       setTimeout(() => textareaRef.current?.focus(), 100);
     }
   }, [autoFocus]);
+
+  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    const cursor = e.target.selectionStart ?? value.length;
+    setContent(value);
+    cursorPosRef.current = cursor;
+
+    const query = getMentionQuery(value, cursor);
+    setMentionQuery(query);
+    setMentionIndex(0);
+  }, []);
+
+  const selectMention = useCallback(
+    (username: string) => {
+      const { newText, newCursor } = insertMention(content, cursorPosRef.current, username);
+      setContent(newText);
+      setMentionQuery(null);
+      setMentionIndex(0);
+
+      requestAnimationFrame(() => {
+        const ta = textareaRef.current;
+        if (ta) {
+          ta.focus();
+          ta.setSelectionRange(newCursor, newCursor);
+          cursorPosRef.current = newCursor;
+        }
+      });
+    },
+    [content]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (!showMentions || !mentionResults) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setMentionIndex((i) => (i + 1) % mentionResults.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setMentionIndex((i) => (i - 1 + mentionResults.length) % mentionResults.length);
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault();
+        selectMention(mentionResults[mentionIndex].username);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setMentionQuery(null);
+      }
+    },
+    [showMentions, mentionResults, mentionIndex, selectMention]
+  );
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -139,16 +218,52 @@ export function PostComposer({
         )}
       </div>
 
-      <div className="flex-1">
+      <div className="relative flex-1">
         <Textarea
           ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleContentChange}
+          onKeyDown={handleKeyDown}
+          onClick={(e) => {
+            const ta = e.currentTarget;
+            cursorPosRef.current = ta.selectionStart ?? 0;
+            setMentionQuery(getMentionQuery(ta.value, cursorPosRef.current));
+            setMentionIndex(0);
+          }}
           placeholder={placeholder}
           maxLength={280}
           className="min-h-[60px] resize-none border-0 bg-transparent p-0 text-lg focus-visible:ring-0"
           rows={compact ? 2 : 3}
         />
+
+        {showMentions && (
+          <div className="absolute left-0 right-0 z-50 mt-1 overflow-hidden rounded-xl border bg-background shadow-lg">
+            {mentionResults.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  selectMention(p.username);
+                }}
+                className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                  i === mentionIndex ? "bg-accent" : "hover:bg-accent/50"
+                }`}
+              >
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src={p.avatar_url ?? undefined} />
+                  <AvatarFallback className="text-[10px]">
+                    {getInitials(p.display_name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{p.display_name}</p>
+                  <p className="truncate text-xs text-muted-foreground">@{p.username}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {mediaPreviews.length > 0 && (
           <div className="mt-2 grid grid-cols-2 gap-2">
