@@ -45,8 +45,8 @@ export default function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
       toast.success("Rol actualizado");
     },
-    onError: () => {
-      toast.error("Error al actualizar el rol");
+    onError: (err: Error) => {
+      toast.error(`Error al actualizar el rol: ${err.message}`);
     },
   });
 

@@ -191,14 +191,16 @@ export function PostComposer({
             toast.success(parentId ? "Respuesta publicada" : "Publicación creada");
             onSuccess?.();
           },
-          onError: () => {
-            toast.error("Error al crear la publicación");
+          onError: (err: Error) => {
+            toast.error(`Error al crear la publicación: ${err.message}`);
           },
         }
       );
-    } catch {
+    } catch (err) {
       setUploading(false);
-      toast.error("Error al subir los archivos");
+      toast.error(
+        `Error al subir los archivos: ${err instanceof Error ? err.message : "error desconocido"}`
+      );
     }
   };
 
@@ -269,9 +271,10 @@ export function PostComposer({
           <div className="mt-2 grid grid-cols-2 gap-2">
             {mediaPreviews.map((preview, i) => (
               <div key={i} className="relative aspect-video overflow-hidden rounded-xl">
-                <Image src={preview} alt="" fill className="object-cover" />
+                <Image src={preview} alt={`Vista previa ${i + 1}`} fill className="object-cover" />
                 <button
                   onClick={() => removeMedia(i)}
+                  aria-label={`Eliminar imagen ${i + 1}`}
                   className="absolute right-1 top-1 rounded-full bg-black/70 p-1 text-white hover:bg-black/90"
                 >
                   <X className="h-4 w-4" />
@@ -289,6 +292,7 @@ export function PostComposer({
               accept="image/*"
               multiple
               className="hidden"
+              aria-label="Subir imágenes"
               onChange={handleFileSelect}
             />
             <Button

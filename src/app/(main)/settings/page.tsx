@@ -68,7 +68,7 @@ export default function SettingsPage() {
       .eq("id", profile.id);
 
     if (error) {
-      toast.error("Error al actualizar el perfil");
+      toast.error(`Error al actualizar el perfil: ${error.message}`);
     } else {
       toast.success("Perfil actualizado");
       await refreshProfile();

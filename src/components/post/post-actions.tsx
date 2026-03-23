@@ -67,7 +67,6 @@ export function PostActions({ post }: PostActionsProps) {
           post.is_liked ? "text-pink-500" : "text-muted-foreground"
         )}
         onClick={handleLike}
-        disabled={likeMutation.isPending}
       >
         <Heart
           className={cn("h-4 w-4 group-hover:text-pink-500", post.is_liked && "fill-current")}
@@ -83,7 +82,6 @@ export function PostActions({ post }: PostActionsProps) {
           post.is_bookmarked ? "text-xcion-primary" : "text-muted-foreground"
         )}
         onClick={handleBookmark}
-        disabled={bookmarkMutation.isPending}
       >
         <Bookmark
           className={cn(

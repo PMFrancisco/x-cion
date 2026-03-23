@@ -56,12 +56,55 @@ export function useFollow() {
         if (error) throw error;
       }
     },
-    onSuccess: (_, { targetUserId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ["following", targetUserId],
-      });
+
+    // Actualizar el cache antes de que el servidor responda para que el botón reaccione al instante
+    onMutate: async ({ targetUserId, isFollowing }) => {
+      // Cancelar queries en curso para que no sobreescriban el cambio optimista
+      await queryClient.cancelQueries({ queryKey: ["following", targetUserId] });
+      await queryClient.cancelQueries({ queryKey: ["follow-counts", targetUserId] });
+
+      // Guardar estado previo para revertir si falla
+      const prevFollowing = queryClient.getQueryData<boolean>([
+        "following",
+        targetUserId,
+        effectiveProfileId,
+      ]);
+      const prevCounts = queryClient.getQueryData<{ followers: number; following: number }>([
+        "follow-counts",
+        targetUserId,
+      ]);
+
+      // Invertir el estado de follow inmediatamente
+      queryClient.setQueryData(["following", targetUserId, effectiveProfileId], !isFollowing);
+
+      // Actualizar el contador de seguidores del perfil objetivo
+      if (prevCounts) {
+        queryClient.setQueryData(["follow-counts", targetUserId], {
+          ...prevCounts,
+          followers: prevCounts.followers + (isFollowing ? -1 : 1),
+        });
+      }
+
+      return { prevFollowing, prevCounts, targetUserId };
+    },
+
+    // Si el servidor falla, revertir al estado anterior
+    onError: (_err, _vars, context) => {
+      if (!context) return;
+      queryClient.setQueryData(
+        ["following", context.targetUserId, effectiveProfileId],
+        context.prevFollowing
+      );
+      if (context.prevCounts) {
+        queryClient.setQueryData(["follow-counts", context.targetUserId], context.prevCounts);
+      }
+    },
+
+    // Re-sincronizar follow state y contadores (no posts: seguir/dejar no cambia los posts en sí)
+    onSettled: (_, __, { targetUserId }) => {
+      queryClient.invalidateQueries({ queryKey: ["following", targetUserId] });
+      queryClient.invalidateQueries({ queryKey: ["follow-counts", targetUserId] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 }

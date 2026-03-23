@@ -30,7 +30,12 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
     <div>
       <div className="relative h-32 bg-secondary sm:h-48">
         {profile.banner_url && (
-          <Image src={profile.banner_url} alt="" fill className="object-cover" />
+          <Image
+            src={profile.banner_url}
+            alt={`Banner de ${profile.display_name}`}
+            fill
+            className="object-cover"
+          />
         )}
       </div>
 

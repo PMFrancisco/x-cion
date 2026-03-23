@@ -16,7 +16,7 @@ export default function PostPage() {
 
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", postId, user?.id],
-    retry: 1,
+    retry: 2,
     enabled: !authLoading,
     queryFn: async () => {
       const supabase = createClient();

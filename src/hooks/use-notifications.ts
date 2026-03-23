@@ -53,7 +53,7 @@ export function useNotifications() {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined as string | undefined,
     enabled: !authLoading && !!effectiveProfileId,
-    retry: 1,
+    retry: 2,
   });
 }
 

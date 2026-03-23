@@ -73,8 +73,10 @@ export default function OnboardingPage() {
 
       await refreshProfile();
       router.replace("/");
-    } catch {
-      toast.error("Error al configurar el perfil");
+    } catch (err) {
+      toast.error(
+        `Error al configurar el perfil: ${err instanceof Error ? err.message : "error desconocido"}`
+      );
     } finally {
       setSaving(false);
     }

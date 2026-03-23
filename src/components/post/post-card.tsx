@@ -87,7 +87,7 @@ export function PostCard({
   const handleDelete = () => {
     deletePost.mutate(post.id, {
       onSuccess: () => toast.success("Publicación eliminada"),
-      onError: () => toast.error("Error al eliminar la publicación"),
+      onError: (err: Error) => toast.error(`Error al eliminar: ${err.message}`),
     });
   };
 
@@ -99,7 +99,7 @@ export function PostCard({
           setEditOpen(false);
           toast.success("Publicación actualizada");
         },
-        onError: () => toast.error("Error al actualizar la publicación"),
+        onError: (err: Error) => toast.error(`Error al actualizar: ${err.message}`),
       }
     );
   };
@@ -211,7 +211,7 @@ export function PostCard({
                   >
                     <Image
                       src={url}
-                      alt=""
+                      alt={`Imagen ${i + 1} de la publicación`}
                       fill
                       className="object-cover transition-transform duration-200 hover:scale-105"
                     />
@@ -231,7 +231,7 @@ export function PostCard({
           <div className="relative flex h-[90vh] items-center justify-center">
             <Image
               src={post.media_urls[lightboxIndex]}
-              alt=""
+              alt={`Imagen ${lightboxIndex + 1} de ${post.media_urls.length}`}
               fill
               className="object-contain"
               sizes="(max-width: 1024px) 100vw, 80vw"
@@ -240,12 +240,14 @@ export function PostCard({
               <>
                 <button
                   onClick={prevImage}
+                  aria-label="Imagen anterior"
                   className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/80"
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </button>
                 <button
                   onClick={nextImage}
+                  aria-label="Siguiente imagen"
                   className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/80"
                 >
                   <ChevronRight className="h-6 w-6" />
@@ -255,6 +257,7 @@ export function PostCard({
                     <button
                       key={i}
                       onClick={() => setLightboxIndex(i)}
+                      aria-label={`Ir a imagen ${i + 1}`}
                       className={cn(
                         "h-1.5 rounded-full transition-all",
                         i === lightboxIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"

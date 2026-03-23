@@ -46,7 +46,6 @@ export function FollowButton({ targetUserId }: FollowButtonProps) {
       onClick={handleClick}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      disabled={followMutation.isPending}
     >
       {isFollowing ? (hovering ? "Dejar de seguir" : "Siguiendo") : "Seguir"}
     </Button>

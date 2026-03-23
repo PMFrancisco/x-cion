@@ -296,8 +296,10 @@ function NpcFormDialog({
           data: { publicUrl },
         } = supabase.storage.from("avatars").getPublicUrl(path);
         avatarUrl = publicUrl;
-      } catch {
-        toast.error("Error al subir el avatar");
+      } catch (err) {
+        toast.error(
+          `Error al subir el avatar: ${err instanceof Error ? err.message : "error desconocido"}`
+        );
         setUploading(false);
         return;
       }
@@ -332,6 +334,7 @@ function NpcFormDialog({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
+              aria-label="Subir avatar del NPC"
               className="relative shrink-0"
             >
               <Avatar className="h-16 w-16">
@@ -349,6 +352,7 @@ function NpcFormDialog({
               type="file"
               accept="image/*"
               className="hidden"
+              aria-label="Subir avatar"
               onChange={handleAvatarSelect}
             />
             <div className="flex-1 space-y-2">

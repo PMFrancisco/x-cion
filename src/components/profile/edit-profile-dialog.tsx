@@ -151,8 +151,10 @@ export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDi
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Perfil actualizado");
       onOpenChange(false);
-    } catch {
-      toast.error("Error al actualizar el perfil");
+    } catch (err) {
+      toast.error(
+        `Error al actualizar el perfil: ${err instanceof Error ? err.message : "error desconocido"}`
+      );
     } finally {
       setSaving(false);
     }
@@ -171,13 +173,14 @@ export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDi
             {(bannerPreview ?? profile.banner_url) && (
               <Image
                 src={bannerPreview ?? profile.banner_url!}
-                alt=""
+                alt="Banner del perfil"
                 fill
                 className="object-cover"
               />
             )}
             <button
               onClick={() => bannerInputRef.current?.click()}
+              aria-label="Cambiar banner"
               className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100"
             >
               <Camera className="h-6 w-6 text-white" />
@@ -187,6 +190,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDi
               type="file"
               accept="image/*"
               className="hidden"
+              aria-label="Subir banner"
               onChange={handleBannerChange}
             />
           </div>
@@ -202,6 +206,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDi
               </Avatar>
               <button
                 onClick={() => avatarInputRef.current?.click()}
+                aria-label="Cambiar avatar"
                 className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity hover:opacity-100"
               >
                 <Camera className="h-5 w-5 text-white" />
@@ -211,6 +216,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: EditProfileDi
                 type="file"
                 accept="image/*"
                 className="hidden"
+                aria-label="Subir avatar"
                 onChange={handleAvatarChange}
               />
             </div>
