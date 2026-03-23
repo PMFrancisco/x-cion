@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Heart, MessageCircle, Bookmark, Share } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLike } from "@/hooks/use-likes";
 import { useBookmark } from "@/hooks/use-bookmarks";
@@ -113,7 +113,7 @@ export function PostActions({ post }: PostActionsProps) {
         className="px-2 text-muted-foreground hover:text-xcion-primary"
         onClick={handleShare}
       >
-        <Share className="h-4 w-4" />
+        <Share2 className="h-4 w-4" />
       </Button>
     </div>
   );
