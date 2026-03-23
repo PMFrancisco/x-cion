@@ -31,12 +31,28 @@ export function PostActions({ post }: PostActionsProps) {
     });
   };
 
-  const handleShare = (e: React.MouseEvent) => {
+  const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(
-      `${window.location.origin}/${post.author.username}/status/${post.id}`
-    );
-    toast.success("Enlace copiado al portapapeles");
+    const url = `${window.location.origin}/${post.author.username}/status/${post.id}`;
+    const shareData = {
+      title: `${post.author.display_name} en Xcion`,
+      text: post.content.slice(0, 100),
+      url,
+    };
+
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err instanceof Error && err.name !== "AbortError") {
+          await navigator.clipboard.writeText(url);
+          toast.success("Enlace copiado al portapapeles");
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success("Enlace copiado al portapapeles");
+    }
   };
 
   return (
