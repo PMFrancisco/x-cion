@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { PostComposer } from "@/components/post/post-composer";
+import { ComposeDialog } from "@/components/layout/compose-dialog";
 import { PostFeed } from "@/components/post/post-feed";
 import { usePosts } from "@/hooks/use-posts";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +11,9 @@ import { PageHeader } from "@/components/layout/page-header";
 import { cn } from "@/lib/utils";
 
 export default function HomePage() {
+  const searchParams = useSearchParams();
   const [feedType, setFeedType] = useState<"home" | "explore">("explore");
+  const [composeOpen, setComposeOpen] = useState(() => searchParams.get("compose") === "true");
 
   const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } = usePosts({
     feedType,
@@ -45,6 +49,7 @@ export default function HomePage() {
       </PageHeader>
 
       <PostComposer />
+      <ComposeDialog open={composeOpen} onOpenChange={setComposeOpen} />
       <Separator />
 
       <PostFeed

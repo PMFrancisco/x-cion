@@ -8,10 +8,12 @@ import { MobileDrawer } from "@/components/layout/mobile-drawer";
 import { MobileDrawerProvider } from "@/contexts/mobile-drawer-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useRealtimeNotifications } from "@/hooks/use-notifications";
+import { useAppBadge } from "@/hooks/use-app-badge";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { isLoading } = useAuth();
   useRealtimeNotifications();
+  useAppBadge();
 
   return (
     <MobileDrawerProvider>
