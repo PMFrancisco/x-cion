@@ -2,6 +2,7 @@
   "name": "xcion",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.24.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "prepare": "husky",
+    "preinstall": "npx only-allow pnpm",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
@@ -25,6 +27,12 @@
     ],
     "*.{json,md,css}": [
       "prettier --write"
+    ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "supabase"
     ]
   },
   "dependencies": {

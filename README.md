@@ -34,7 +34,7 @@ A mock social network built for [Inner Circle Rol](https://www.instagram.com/inn
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Create a Supabase project
@@ -53,8 +53,8 @@ Run each migration file in order in the Supabase Dashboard SQL Editor:
 Or, if using the Supabase CLI locally:
 
 ```bash
-npm run db:start
-npm run db:reset
+pnpm run db:start
+pnpm run db:reset
 ```
 
 ### 4. Enable Google OAuth (optional)
@@ -78,7 +78,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### 6. Run the development server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -142,6 +142,6 @@ src/
 ## Build for production
 
 ```bash
-npm run build
-npm start
+pnpm run build
+pnpm start
 ```
