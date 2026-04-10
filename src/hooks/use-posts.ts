@@ -4,7 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-q
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { enrichPosts, type RawPost } from "@/lib/post-helpers";
-import type { PostWithCounts } from "@/lib/types";
+import type { PostWithCounts, PollDuration } from "@/lib/types";
 
 const PAGE_SIZE = 20;
 
@@ -118,10 +118,12 @@ export function useCreatePost() {
       content,
       mediaUrls = [],
       parentId,
+      poll,
     }: {
       content: string;
       mediaUrls?: string[];
       parentId?: string;
+      poll?: { options: string[]; duration: PollDuration };
     }) => {
       if (!effectiveProfileId) throw new Error("Not authenticated");
       const supabase = createClient();
@@ -138,6 +140,30 @@ export function useCreatePost() {
         .single();
 
       if (error) throw error;
+
+      if (poll && poll.options.length >= 2) {
+        const durationHours: Record<PollDuration, number> = { "1d": 24, "3d": 72, "7d": 168 };
+        const expiresAt = new Date();
+        expiresAt.setHours(expiresAt.getHours() + durationHours[poll.duration]);
+
+        const { data: pollData, error: pollError } = await supabase
+          .from("polls")
+          .insert({ post_id: data.id, expires_at: expiresAt.toISOString() })
+          .select()
+          .single();
+
+        if (pollError) throw pollError;
+
+        const optionRows = poll.options.map((label, i) => ({
+          poll_id: pollData.id,
+          label,
+          position: i,
+        }));
+
+        const { error: optError } = await supabase.from("poll_options").insert(optionRows);
+        if (optError) throw optError;
+      }
+
       return data;
     },
     onSuccess: (_, { parentId }) => {

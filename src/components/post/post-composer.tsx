@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ImagePlus, X, Loader2, Bot } from "lucide-react";
+import { ImagePlus, X, Loader2, Bot, BarChart3 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { useCreatePost } from "@/hooks/use-posts";
 import { useMentionSuggestions } from "@/hooks/use-search";
-import { getInitials } from "@/lib/utils";
+import { getInitials, cn } from "@/lib/utils";
+import { PollComposer } from "@/components/post/poll-composer";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 import Image from "next/image";
+import type { PollDuration } from "@/lib/types";
 
 function getMentionQuery(text: string, cursorPos: number): string | null {
   const before = text.slice(0, cursorPos);
@@ -56,6 +58,9 @@ export function PostComposer({
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [pollData, setPollData] = useState<{ options: string[]; duration: PollDuration } | null>(
+    null
+  );
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [mentionIndex, setMentionIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -155,8 +160,10 @@ export function PostComposer({
     setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const pollIsValid = pollData !== null && pollData.options.filter((o) => o.trim()).length >= 2;
+
   const handleSubmit = async () => {
-    if (!content.trim() && mediaFiles.length === 0) return;
+    if (!content.trim() && mediaFiles.length === 0 && !pollIsValid) return;
 
     try {
       let mediaUrls: string[] = [];
@@ -181,13 +188,18 @@ export function PostComposer({
         setUploading(false);
       }
 
+      const pollPayload = pollIsValid
+        ? { options: pollData.options.filter((o) => o.trim()), duration: pollData.duration }
+        : undefined;
+
       createPost.mutate(
-        { content: content.trim(), mediaUrls, parentId },
+        { content: content.trim(), mediaUrls, parentId, poll: pollPayload },
         {
           onSuccess: () => {
             setContent("");
             setMediaFiles([]);
             setMediaPreviews([]);
+            setPollData(null);
             toast.success(parentId ? "Respuesta publicada" : "Publicación creada");
             onSuccess?.();
           },
@@ -284,6 +296,15 @@ export function PostComposer({
           </div>
         )}
 
+        {pollData && (
+          <PollComposer
+            options={pollData.options}
+            duration={pollData.duration}
+            onChange={setPollData}
+            onRemove={() => setPollData(null)}
+          />
+        )}
+
         <div className="mt-3 flex items-center justify-between border-t pt-3">
           <div className="flex items-center gap-1">
             <input
@@ -300,9 +321,23 @@ export function PostComposer({
               size="icon"
               className="h-9 w-9 text-xcion-primary"
               onClick={() => fileInputRef.current?.click()}
-              disabled={mediaFiles.length >= 4}
+              disabled={mediaFiles.length >= 4 || pollData !== null}
             >
               <ImagePlus className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "h-9 w-9",
+                pollData !== null ? "text-xcion-primary bg-xcion-primary/10" : "text-xcion-primary"
+              )}
+              onClick={() =>
+                setPollData(pollData ? null : { options: ["", ""], duration: "1d" as PollDuration })
+              }
+              disabled={mediaFiles.length > 0}
+            >
+              <BarChart3 className="h-5 w-5" />
             </Button>
           </div>
 
@@ -311,7 +346,9 @@ export function PostComposer({
             <Button
               onClick={handleSubmit}
               disabled={
-                (!content.trim() && mediaFiles.length === 0) || createPost.isPending || uploading
+                (!content.trim() && mediaFiles.length === 0 && !pollIsValid) ||
+                createPost.isPending ||
+                uploading
               }
               className="rounded-full bg-xcion-primary px-4 text-white hover:bg-xcion-primary-hover"
             >
