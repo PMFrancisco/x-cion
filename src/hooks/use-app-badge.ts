@@ -4,15 +4,15 @@ import { useEffect } from "react";
 import { useUnreadCount } from "@/hooks/use-notifications";
 
 export function useAppBadge() {
-  const { data: unreadCount } = useUnreadCount();
+  const { data: unreadCount, isLoading } = useUnreadCount();
 
   useEffect(() => {
-    if (!("setAppBadge" in navigator)) return;
+    if (!("setAppBadge" in navigator) || isLoading) return;
 
     if (unreadCount && unreadCount > 0) {
       navigator.setAppBadge(unreadCount).catch(() => {});
     } else {
       navigator.clearAppBadge().catch(() => {});
     }
-  }, [unreadCount]);
+  }, [unreadCount, isLoading]);
 }

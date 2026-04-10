@@ -38,6 +38,7 @@ export interface PostWithCounts extends PostWithAuthor {
   is_bookmarked: boolean;
   is_reposted: boolean;
   is_replied: boolean;
+  poll: PollWithOptions | null;
 }
 
 export interface Like {
@@ -77,6 +78,34 @@ export interface ProfileWithCounts extends Profile {
   following_count: number;
   post_count: number;
   is_following: boolean;
+}
+
+export type PollDuration = "1d" | "3d" | "7d";
+
+export interface PollOption {
+  id: string;
+  poll_id: string;
+  label: string;
+  position: number;
+  created_at: string;
+}
+
+export interface PollOptionWithCount extends PollOption {
+  vote_count: number;
+}
+
+export interface Poll {
+  id: string;
+  post_id: string;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface PollWithOptions extends Poll {
+  options: PollOptionWithCount[];
+  total_votes: number;
+  user_vote_option_id: string | null;
+  is_expired: boolean;
 }
 
 export interface PaginatedResponse<T> {

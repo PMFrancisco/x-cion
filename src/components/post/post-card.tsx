@@ -25,8 +25,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PostActions } from "./post-actions";
 import { PostContent } from "./post-content";
+import { PollDisplay } from "./poll-display";
 import { useAuth } from "@/hooks/use-auth";
 import { useDeletePost, useUpdatePost } from "@/hooks/use-posts";
+import { useVotePoll } from "@/hooks/use-polls";
 import { formatRelativeTime, getInitials, cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { PostWithCounts } from "@/lib/types";
@@ -48,6 +50,7 @@ export function PostCard({
   const { user, isAdmin } = useAuth();
   const deletePost = useDeletePost();
   const updatePost = useUpdatePost();
+  const votePoll = useVotePoll();
   const [editOpen, setEditOpen] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -190,6 +193,14 @@ export function PostCard({
             </div>
 
             <PostContent text={post.content} />
+
+            {post.poll && (
+              <PollDisplay
+                poll={post.poll}
+                onVote={(optionId) => votePoll.mutate({ pollId: post.poll!.id, optionId })}
+                isVoting={votePoll.isPending}
+              />
+            )}
 
             {post.media_urls.length > 0 && (
               <div
