@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CalendarDays, Shield, Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FollowButton } from "./follow-button";
 import { EditProfileDialog } from "./edit-profile-dialog";
@@ -23,6 +24,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const { user, effectiveProfileId } = useAuth();
   const { data: counts } = useFollowCounts(profile.id);
   const [editOpen, setEditOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const isOwnProfile = user?.id === profile.id;
   const isEffectiveSelf = effectiveProfileId === profile.id;
 
@@ -41,12 +43,17 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
 
       <div className="px-4">
         <div className="relative flex justify-between">
-          <Avatar className="-mt-12 h-20 w-20 border-4 border-background sm:-mt-16 sm:h-32 sm:w-32">
-            <AvatarImage src={profile.avatar_url ?? undefined} />
-            <AvatarFallback className="text-2xl sm:text-4xl">
-              {getInitials(profile.display_name)}
-            </AvatarFallback>
-          </Avatar>
+          <button
+            onClick={() => profile.avatar_url && setAvatarOpen(true)}
+            className={profile.avatar_url ? "cursor-zoom-in" : "cursor-default"}
+          >
+            <Avatar className="-mt-12 h-20 w-20 border-4 border-background sm:-mt-16 sm:h-32 sm:w-32">
+              <AvatarImage src={profile.avatar_url ?? undefined} />
+              <AvatarFallback className="text-2xl sm:text-4xl">
+                {getInitials(profile.display_name)}
+              </AvatarFallback>
+            </Avatar>
+          </button>
 
           <div className="mt-3">
             {isOwnProfile ? (
@@ -102,6 +109,23 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
 
       {isOwnProfile && (
         <EditProfileDialog profile={profile} open={editOpen} onOpenChange={setEditOpen} />
+      )}
+
+      {profile.avatar_url && (
+        <Dialog open={avatarOpen} onOpenChange={setAvatarOpen}>
+          <DialogContent className="max-w-2xl border-none bg-black/95 p-0 shadow-none [&>button]:text-white">
+            <DialogTitle className="sr-only">Foto de perfil de {profile.display_name}</DialogTitle>
+            <div className="relative flex aspect-square items-center justify-center">
+              <Image
+                src={profile.avatar_url}
+                alt={`Foto de perfil de ${profile.display_name}`}
+                fill
+                className="object-contain"
+                sizes="(max-width: 672px) 100vw, 672px"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

@@ -8,7 +8,8 @@ A mock social network built for [Inner Circle Rol](https://www.instagram.com/inn
 - **UI**: React 19, Tailwind CSS 4 + shadcn/ui (New York style)
 - **Backend**: Supabase (Postgres, Auth, Realtime, Storage)
 - **Auth**: Google OAuth + Email/Password
-- **State**: TanStack React Query 5 + Zustand 5
+- **State**: TanStack React Query 5
+- **Testing**: Vitest + React Testing Library + happy-dom
 - **Icons**: Lucide React
 - **PWA**: Installable via web manifest + service worker
 
@@ -33,7 +34,7 @@ A mock social network built for [Inner Circle Rol](https://www.instagram.com/inn
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Create a Supabase project
@@ -52,8 +53,8 @@ Run each migration file in order in the Supabase Dashboard SQL Editor:
 Or, if using the Supabase CLI locally:
 
 ```bash
-npm run db:start
-npm run db:reset
+pnpm run db:start
+pnpm run db:reset
 ```
 
 ### 4. Enable Google OAuth (optional)
@@ -77,7 +78,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### 6. Run the development server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -94,18 +95,21 @@ This gives you access to the admin dashboard where you can manage NPCs, moderate
 
 ## Scripts
 
-| Script      | Command              | Description                     |
-| ----------- | -------------------- | ------------------------------- |
-| `dev`       | `next dev`           | Start dev server                |
-| `build`     | `next build`         | Production build                |
-| `start`     | `next start`         | Serve production build          |
-| `lint`      | `eslint`             | Run linter                      |
-| `typecheck` | `tsc --noEmit`       | Type checking                   |
-| `format`    | `prettier --write .` | Format code                     |
-| `db:start`  | `supabase start`     | Start local Supabase            |
-| `db:stop`   | `supabase stop`      | Stop local Supabase             |
-| `db:reset`  | `supabase db reset`  | Reset DB and run all migrations |
-| `db:status` | `supabase status`    | Show Supabase status            |
+| Script          | Command                 | Description                     |
+| --------------- | ----------------------- | ------------------------------- |
+| `dev`           | `next dev`              | Start dev server                |
+| `build`         | `next build`            | Production build                |
+| `start`         | `next start`            | Serve production build          |
+| `lint`          | `eslint`                | Run linter                      |
+| `typecheck`     | `tsc --noEmit`          | Type checking                   |
+| `format`        | `prettier --write .`    | Format code                     |
+| `db:start`      | `supabase start`        | Start local Supabase            |
+| `db:stop`       | `supabase stop`         | Stop local Supabase             |
+| `db:reset`      | `supabase db reset`     | Reset DB and run all migrations |
+| `db:status`     | `supabase status`       | Show Supabase status            |
+| `test`          | `vitest run`            | Run tests                       |
+| `test:watch`    | `vitest`                | Run tests in watch mode         |
+| `test:coverage` | `vitest run --coverage` | Run tests with coverage         |
 
 ## Project Structure
 
@@ -131,12 +135,13 @@ src/
 │   └── ui/                 # shadcn/ui components
 ├── hooks/                  # Custom React hooks (posts, likes, follows, search, NPCs)
 ├── lib/                    # Utilities, types, Supabase clients
+├── test/                   # Shared test utilities (mocks, wrappers, fixtures)
 └── proxy.ts                # Auth proxy (session refresh, route protection)
 ```
 
 ## Build for production
 
 ```bash
-npm run build
-npm start
+pnpm run build
+pnpm start
 ```
