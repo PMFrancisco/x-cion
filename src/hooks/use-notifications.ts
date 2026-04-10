@@ -77,6 +77,7 @@ export function useUnreadCount() {
     },
     enabled: !authLoading && !!effectiveProfileId,
     staleTime: 10_000,
+    refetchInterval: 30_000,
   });
 }
 
